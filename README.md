@@ -5,9 +5,13 @@ Gaussian kernel and an arbitrary positive-definite bandwidth matrix.
 
 Fast implementation in C++ using stable QR decomposition method.
 
+![](examples/looperr_example.png)
+
 # Theory
 
 # Example
+
+The figure at the top of this README was created using the following code:
 
 ```r
 # Create some fake data
@@ -36,7 +40,6 @@ legend(x=0.3,y=-1.5,
        legend=c("Big Bandwidth", "Optimal Bandwidth", "Small Bandwidth"),
        col=c("#00CCCC", "#FFCC33", "#CC0000"), lty=1, lwd=2, box.lty=0, bg=NA)
 ```
-![](examples/looperr_example.png)
 
 In this case, the optimal (yellow) bandwidth was selected by minimizing the LOOCV score
 
