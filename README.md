@@ -1,5 +1,6 @@
 # looperr
-An R Package for evaluating leave-one-out (loo) prediction error (perr).
+An R Package for evaluating leave-one-out (loo) prediction error (perr)
+of linear smoothers.
 Currently only works for local polynomial regression using a multivariate
 Gaussian kernel and an arbitrary positive-definite bandwidth matrix.
 
