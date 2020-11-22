@@ -18,9 +18,10 @@ y = sin(X[,2]) + rnorm(n, sd=0.5)
 H = list(diag(c(5,5)), diag(c(1,1)), diag(c(0.05,0.05)))
 
 # Perform local linear regression with three bandwidth matrices
-sinsmooth1 = loclin_gauss(X, H1, y)
-sinsmooth2 = loclin_gauss(X, H2, y)
-sinsmooth3 = loclin_gauss(X, H3, y)
+predvals = list()
+for(i in 1:3){
+  predvals[[i]] = loclin_gauss(X, H[[i]], y)$pred_vals
+}
 
 # Plot the local linear fits using base R graphics
 plot(x=X[,2], y=y,
