@@ -9,21 +9,27 @@ Fast implementation in C++ using stable QR decomposition method.
 
 ```r
 # Create some fake data
+set.seed(1234)
 n = 200
 X = cbind(rep(1, n),seq(1,10, length.out=n))
 y = sin(X[,2]) + rnorm(n, sd=0.5)
-H1 = diag(3,3)
-H2 = diag(1,1)
-H3 = diag(0.1,0.1)
+
+# Create arbitrary bandwidth matrices
+H = list(diag(c(5,5)), diag(c(1,1)), diag(c(0.05,0.05)))
 
 # Perform local linear regression with three bandwidth matrices
 sinsmooth1 = loclin_gauss(X, H1, y)
 sinsmooth2 = loclin_gauss(X, H2, y)
 sinsmooth3 = loclin_gauss(X, H3, y)
 
-# Plot the local linear fits
-plot(X[,2], y)
-lines(X[,2], sinsmooth1$pred_vals, col="red")
-lines(X[,2], sinsmooth2$pred_vals, col="blue")
-lines(X[,2], sinsmooth3$pred_vals, col="green")
+# Plot the local linear fits using base R graphics
+plot(x=X[,2], y=y,
+     axes=FALSE, xaxt="n", yaxt="n", ann=FALSE,
+     pch=16, cex=0.9)
+lines(X[,2], predvals[[1]], col="#00CCCC", lwd=2)
+lines(X[,2], predvals[[2]], col="#FFCC33", lwd=2)
+lines(X[,2], predvals[[3]], col="#CC0000", lwd=2)
+legend(x=0.3,y=-1.5,
+       legend=c("Big Bandwidth", "Medium Bandwidth", "Small Bandwidth"),
+       col=c("#00CCCC", "#FFCC33", "#CC0000"), lty=1, lwd=2, box.lty=0, bg=NA)
 ```
