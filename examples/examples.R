@@ -2,7 +2,7 @@ set.seed(1234)
 n = 200
 X = cbind(rep(1, n),seq(1,10, length.out=n))
 y = sin(X[,2]) + rnorm(n, sd=0.5)
-H = list(diag(c(5,5)), diag(c(1,1)), diag(c(0.05,0.05)))
+H = list(matrix(5), matrix(1), matrix(0.05))
 predvals = list()
 for(i in 1:3){
   predvals[[i]] = loclin_gauss(X, H[[i]], y)$pred_vals

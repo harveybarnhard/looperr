@@ -76,7 +76,8 @@ double hatdiag(arma::mat& Q, arma::vec& w, int &i) {
 
 // -----------------------------------------
 // Function that performs local linear
-// regression for a fixed bandwidth
+// regression for a fixed bandwidth using
+// Gaussian kernel
 // -----------------------------------------
 
 //' Function that performs local linear regression
@@ -91,13 +92,14 @@ Rcpp::List loclin_gauss(arma::mat& X,
                         arma::mat& H,
                         arma::vec& y) {
   int n = X.n_rows, k = X.n_cols;
+  arma::uvec colind = arma::regspace<arma::uvec>(1,1,k - 1);
   arma::vec pred_vals(n, arma::fill::zeros);
   arma::vec hat(n, arma::fill::zeros);
   arma::rowvec x0(k, arma::fill::zeros);
   for(int i=0; i < n; i++){
     x0 = X.row(i);
     // Determine weights using a multivariate Gaussian Kernel
-    arma::vec w = dmvnrm(X, x0, H);
+    arma::vec w = dmvnrm(X.cols(colind), x0(colind), H);
     // Scale X and Y by weights
     // X.each_col() %= sqrt(w);
     // Solve OLS using economical QR decomposition
