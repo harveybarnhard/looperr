@@ -7,11 +7,11 @@
 loocv_gauss(X, H, y)
 }
 \arguments{
-\item{\code{X}:}{an nxk data matrix}
+\item{X:}{an nxk data matrix}
 
-\item{\code{H}:}{a kxk positive definite bandwidth matrix}
+\item{H:}{a kxk positive definite bandwidth matrix}
 
-\item{\code{y}:}{The nx1 output vector}
+\item{y:}{The nx1 output vector}
 }
 \description{
 Function that returns LOOCV score using Gaussian kernel

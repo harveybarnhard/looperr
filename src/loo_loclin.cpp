@@ -20,7 +20,6 @@ void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
   }
 }
 
-// [[Rcpp::export]]
 arma::vec dmvnrm(arma::mat const &x,
                            arma::rowvec const &mean,
                            arma::mat const &chol_sigma,
@@ -69,53 +68,60 @@ double hatdiag(arma::mat const &Q, arma::vec const &w, int const &i) {
 //' Function that performs local linear regression
 //' using a Gaussian Kernel.
 //'
-//' @param X: an nxk data matrix
-//' @param H: a kxk positive definite bandwidth matrix
-//' @param y: The nx1 output vector
+//' @param X an nxk data matrix
+//' @param H a kxk positive definite bandwidth matrix
+//' @param y The nx1 output vector
+//' @param Xeval an mxp matrix at which to predict using local linear regression
+//' @param sameX logical; Are the evaluation points the same as X?
 //' @export
 // [[Rcpp::export]]
 Rcpp::List loclin_gauss(arma::mat const &X,
                         arma::mat const &H,
-                        arma::vec const &y) {
-  int n = X.n_rows, k = X.n_cols;
+                        arma::vec const &y,
+                        arma::mat const &Xeval,
+                        int const &sameX) {
+  int n = X.n_rows, k = X.n_cols, neval = Xeval.n_rows;
   arma::uvec colind = arma::regspace<arma::uvec>(1,1,k - 1);
-  arma::vec pred_vals(n, arma::fill::zeros);
+  arma::vec pred_vals(neval, arma::fill::zeros);
   arma::vec hat(n, arma::fill::zeros);
-  arma::rowvec x0(k, arma::fill::zeros);
+  arma::vec pred_err(n, arma::fill::zeros);
 
   // Perform Cholesky decomposition of H
   arma::mat cholH = H;
   if(k > 2) {
-    cholH = arma::chol(H);
+    cholH = arma::chol(H, "lower");
   }
-  for(int i=0; i < n; i++){
-    x0 = X.row(i);
+
+  for(int i=0; i < neval; i++){
+    arma::rowvec x0 = Xeval.row(i);
     // Determine weights using a multivariate Gaussian Kernel
     arma::vec w = dmvnrm(X.cols(colind), x0(colind), cholH);
-    // Scale X and Y by weights
-    // X.each_col() %= sqrt(w);
-    // Solve OLS using economical QR decomposition
+    // Solve OLS using economical QR decomposition, scaling X and y by weights
     arma::mat Q, R;
     arma::qr_econ(Q, R, X.each_col() % sqrt(w));
     arma::vec beta = solve(R, (Q.t() * (y%sqrt(w))));
     pred_vals(i) = arma::as_scalar(x0*beta);
     // Find diagonal of hat matrix
-    hat(i) = hatdiag(Q, w, i);
+    if(sameX==1){
+      hat(i) = hatdiag(Q, w, i);
+    }
   }
-  arma::vec pred_err = (y - pred_vals) / (1 - hat);
+  if(sameX==1){
+    pred_err = (y - pred_vals) / (1 - hat);
+  }
   List listout = List::create(Named("pred_vals")    = pred_vals,
                               Named("loo_pred_err") = pred_err);
   return listout;
 }
 //' Function that returns LOOCV score using Gaussian kernel
 //'
-//' @param \code{X}: an nxk data matrix
-//' @param \code{H}: a kxk positive definite bandwidth matrix
-//' @param \code{y}: The nx1 output vector
+//' @param X: an nxk data matrix
+//' @param H: a kxk positive definite bandwidth matrix
+//' @param y: The nx1 output vector
 //' @export
 // [[Rcpp::export]]
 double loocv_gauss(arma::mat const &X, arma::mat const &H, arma::vec const &y) {
-  Rcpp::List L = loclin_gauss(X, H, y);
+  Rcpp::List L = loclin_gauss(X, H, y, X, 1);
   arma::vec pred_err = L["loo_pred_err"];
   double cvscore = as_scalar(sum(pow(pred_err,2)));
   return cvscore;

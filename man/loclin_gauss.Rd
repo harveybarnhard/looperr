@@ -5,14 +5,18 @@
 \title{Function that performs local linear regression
 using a Gaussian Kernel.}
 \usage{
-loclin_gauss(X, H, y)
+loclin_gauss(X, H, y, Xeval, sameX)
 }
 \arguments{
-\item{X:}{an nxk data matrix}
+\item{X}{an nxk data matrix}
 
-\item{H:}{a kxk positive definite bandwidth matrix}
+\item{H}{a kxk positive definite bandwidth matrix}
 
-\item{y:}{The nx1 output vector}
+\item{y}{The nx1 output vector}
+
+\item{Xeval}{an mxp matrix at which to predict using local linear regression}
+
+\item{sameX}{logical; Are the evaluation points the same as X?}
 }
 \description{
 Function that performs local linear regression

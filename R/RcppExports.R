@@ -4,34 +4,32 @@
 #' Function that performs linear regression
 #' and saves the diagonal of the hat matrix
 #'
-#' @param \code{X}: an nxk data matrix
-#' @param \code{y}: The nx1 output vector
-#' @param \code{w}: an nx1 vector of weights
+#' @param X: an nxk data matrix
+#' @param y: The nx1 output vector
+#' @param w: an nx1 vector of weights
 #' @export
 fastols <- function(X, y, w) {
     .Call('_looperr_fastols', PACKAGE = 'looperr', X, y, w)
 }
 
-dmvnrm <- function(x, mean, chol_sigma, logd = FALSE) {
-    .Call('_looperr_dmvnrm', PACKAGE = 'looperr', x, mean, chol_sigma, logd)
-}
-
 #' Function that performs local linear regression
 #' using a Gaussian Kernel.
 #'
-#' @param X: an nxk data matrix
-#' @param H: a kxk positive definite bandwidth matrix
-#' @param y: The nx1 output vector
+#' @param X an nxk data matrix
+#' @param H a kxk positive definite bandwidth matrix
+#' @param y The nx1 output vector
+#' @param Xeval an mxp matrix at which to predict using local linear regression
+#' @param sameX logical; Are the evaluation points the same as X?
 #' @export
-loclin_gauss <- function(X, H, y) {
-    .Call('_looperr_loclin_gauss', PACKAGE = 'looperr', X, H, y)
+loclin_gauss <- function(X, H, y, Xeval, sameX) {
+    .Call('_looperr_loclin_gauss', PACKAGE = 'looperr', X, H, y, Xeval, sameX)
 }
 
 #' Function that returns LOOCV score using Gaussian kernel
 #'
-#' @param \code{X}: an nxk data matrix
-#' @param \code{H}: a kxk positive definite bandwidth matrix
-#' @param \code{y}: The nx1 output vector
+#' @param X: an nxk data matrix
+#' @param H: a kxk positive definite bandwidth matrix
+#' @param y: The nx1 output vector
 #' @export
 loocv_gauss <- function(X, H, y) {
     .Call('_looperr_loocv_gauss', PACKAGE = 'looperr', X, H, y)

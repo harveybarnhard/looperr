@@ -8,11 +8,11 @@ and saves the diagonal of the hat matrix}
 fastols(X, y, w)
 }
 \arguments{
-\item{\code{X}:}{an nxk data matrix}
+\item{X:}{an nxk data matrix}
 
-\item{\code{y}:}{The nx1 output vector}
+\item{y:}{The nx1 output vector}
 
-\item{\code{w}:}{an nx1 vector of weights}
+\item{w:}{an nx1 vector of weights}
 }
 \description{
 Function that performs linear regression

@@ -11,9 +11,9 @@ using namespace Rcpp;
 //' Function that performs linear regression
 //' and saves the diagonal of the hat matrix
 //'
-//' @param \code{X}: an nxk data matrix
-//' @param \code{y}: The nx1 output vector
-//' @param \code{w}: an nx1 vector of weights
+//' @param X: an nxk data matrix
+//' @param y: The nx1 output vector
+//' @param w: an nx1 vector of weights
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fastols(arma::mat& X, arma::vec& y, arma::vec& w) {
