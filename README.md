@@ -5,7 +5,9 @@ Gaussian kernel and an arbitrary positive-definite bandwidth matrix.
 
 Fast implementation in C++ using stable QR decomposition method.
 
-# Use
+# Theory
+
+# Example
 
 ```r
 # Create some fake data
