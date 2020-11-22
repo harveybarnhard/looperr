@@ -19,3 +19,5 @@ LinkingTo:
 Imports: 
     Rcpp, RcppArmadillo
 Depends: RcppArmadillo
+Suggests: 
+    testthat

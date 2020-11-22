@@ -20,7 +20,6 @@ void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
   }
 }
 
-// [[Rcpp::export]]
 arma::vec dmvnrm(arma::mat const &x,
                            arma::rowvec const &mean,
                            arma::mat const &sigma,
@@ -51,8 +50,6 @@ arma::vec dmvnrm(arma::mat const &x,
 // Function that performs OLS regression template using
 // https://dannyjameswilliams.co.uk/portfolios/sc2/rcpp/
 // ------------------------------------------------------
-
-// [[Rcpp::export(name="fastlm")]]
 arma::vec fastols(arma::vec& y, arma::mat& X) {
   // Solve OLS using fast QR decomposition
   arma::mat Q, R;
@@ -77,8 +74,17 @@ double hatdiag(arma::mat& Q, arma::vec& w, int &i) {
 }
 
 // -----------------------------------------
-// Function that performs one
+// Function that performs local linear
+// regression for a fixed bandwidth
 // -----------------------------------------
+
+//' Function that performs local linear regression
+//' using a Gaussian Kernel.
+//'
+//' @param \code{X}: an nxk data matrix
+//' @param \code{H}: a kxk positive definite bandwidth matrix
+//' @param \code{y}: The nx1 output vector
+//' @export
 // [[Rcpp::export]]
 Rcpp::List loclin_gauss(arma::mat& X,
                         arma::mat& H,
