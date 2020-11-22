@@ -7,7 +7,7 @@ predvals = list()
 for(i in 1:3){
   predvals[[i]] = loclin_gauss(X, H[[i]], y)$pred_vals
 }
-png(filename="looperr_example.png", width=800, height=480)
+png(filename="examples/looperr_example.png", width=800, height=480)
 plot(x=X[,2], y=y,
      axes=FALSE, xaxt="n", yaxt="n", ann=FALSE,
      pch=16, cex=0.9)
