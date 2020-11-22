@@ -36,7 +36,7 @@ legend(x=0.3,y=-1.5,
 ```
 ![](examples/looperr_example.png)
 
-In this case, the optimal bandwidth was selected by minimizing the LOOCV score
+In this case, the optimal (medium) bandwidth was selected by minimizing the LOOCV score
 
 ```r
 optim(1, function(x) loocv(X, matrix(x), y), lower=0.1,upper=20, method="Brent")$par
