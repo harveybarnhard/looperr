@@ -5,3 +5,19 @@ timesTwo <- function(x) {
     .Call('_looperr_timesTwo', PACKAGE = 'looperr', x)
 }
 
+dmvnrm <- function(x, mean, sigma, logd = FALSE) {
+    .Call('_looperr_dmvnrm', PACKAGE = 'looperr', x, mean, sigma, logd)
+}
+
+fastlm <- function(y, X) {
+    .Call('_looperr_fastols', PACKAGE = 'looperr', y, X)
+}
+
+hatdiag <- function(Q, w, i) {
+    .Call('_looperr_hatdiag', PACKAGE = 'looperr', Q, w, i)
+}
+
+loclin_gauss <- function(X, H, y) {
+    .Call('_looperr_loclin_gauss', PACKAGE = 'looperr', X, H, y)
+}
+

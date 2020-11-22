@@ -68,9 +68,7 @@ arma::vec fastols(arma::vec& y, arma::mat& X) {
 // https://stackoverflow.com/questions/20562177/get-hat-matrix-from-qr-decomposition-for-weighted-least-square-regression
 // -------------------------------------------------
 // [[Rcpp::export]]
-double hatdiag(arma::mat& Q,
-                  arma::vec& w,
-                  int &i) {
+double hatdiag(arma::mat& Q, arma::vec& w, int &i) {
   // Rescale Q by weights
   arma::mat Q1 = Q.each_col() / sqrt(w);
   arma::mat Q2 = Q.each_col() % sqrt(w);
