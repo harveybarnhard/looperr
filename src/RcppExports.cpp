@@ -6,6 +6,20 @@
 
 using namespace Rcpp;
 
+// dmvnrm
+arma::vec dmvnrm(arma::mat const& x, arma::rowvec const& mean, arma::mat const& sigma, bool const logd);
+RcppExport SEXP _looperr_dmvnrm(SEXP xSEXP, SEXP meanSEXP, SEXP sigmaSEXP, SEXP logdSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat const& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::rowvec const& >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool const >::type logd(logdSEXP);
+    rcpp_result_gen = Rcpp::wrap(dmvnrm(x, mean, sigma, logd));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hatdiag
 double hatdiag(arma::mat& Q, arma::vec& w, int& i);
 RcppExport SEXP _looperr_hatdiag(SEXP QSEXP, SEXP wSEXP, SEXP iSEXP) {
@@ -34,6 +48,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_looperr_dmvnrm", (DL_FUNC) &_looperr_dmvnrm, 4},
     {"_looperr_hatdiag", (DL_FUNC) &_looperr_hatdiag, 3},
     {"_looperr_loclin_gauss", (DL_FUNC) &_looperr_loclin_gauss, 3},
     {NULL, NULL, 0}

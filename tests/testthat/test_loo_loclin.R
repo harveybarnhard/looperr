@@ -10,3 +10,4 @@ H1 = diag(rep(1, k1))
 test_that("loo_loclin Correct output dimensions", {
   expect_equal()
 })
+
