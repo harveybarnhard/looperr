@@ -1,10 +1,12 @@
-#include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
+#include <RcppArmadillo.h>
+#include <Rcpp.h>
+using namespace Rcpp;
 
-// -----------------------------
+// ------------------------------------------------
 // Multivariate density function: copied from
 // https://gallery.rcpp.org/articles/dmvnorm_arma/
-// -----------------------------
+// ------------------------------------------------
 static double const log2pi = std::log(2.0 * M_PI);
 /* C++ version of the dtrmv BLAS function */
 void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
@@ -45,10 +47,10 @@ arma::vec dmvnrm(arma::mat const &x,
 }
 
 
-// ---------------------------------------
+// ------------------------------------------------------
 // Function that performs OLS regression template using
 // https://dannyjameswilliams.co.uk/portfolios/sc2/rcpp/
-// ---------------------------------------
+// ------------------------------------------------------
 
 // [[Rcpp::export(name="fastlm")]]
 arma::vec fastols(arma::vec& y, arma::mat& X) {
@@ -59,21 +61,49 @@ arma::vec fastols(arma::vec& y, arma::mat& X) {
   return beta;
 }
 
-// ------------------------
-// Function that performs one
-// ------------------------
-// [[Rcpp::export(name="testh")]]
-arma::vec loclin_row(arma::rowvec& x0,
-                     arma::mat& X,
-                     arma::mat& H) {
-  // Determine weights using a multivariate Gaussian Kernel
-  arma::vec h = dmvnrm(X, x0.t(), H);
-  /*
-  arma::vec beta = fastols(y % sqrt(h), X.each_col() % sqrt(h));
-  return X0 * beta;
-  */
+// -------------------------------------------------
+// Function that finds diagonal of hat matrix given
+// the Q of the QR factorization and a vector of
+// weights
+// https://stackoverflow.com/questions/20562177/get-hat-matrix-from-qr-decomposition-for-weighted-least-square-regression
+// -------------------------------------------------
+// [[Rcpp::export]]
+double hatdiag(arma::mat& Q,
+                  arma::vec& w,
+                  int &i) {
+  // Rescale Q by weights
+  arma::mat Q1 = Q.each_col() / sqrt(w);
+  arma::mat Q2 = Q.each_col() % sqrt(w);
+  arma::vec out = sum(Q1%Q2,1);
+  return out(i);
 }
 
-/*** R
-
-*/
+// -----------------------------------------
+// Function that performs one
+// -----------------------------------------
+// [[Rcpp::export]]
+Rcpp::List loclin_gauss(arma::mat& X,
+                        arma::mat& H,
+                        arma::vec& y) {
+  int n = X.n_rows, k = X.n_cols;
+  arma::vec pred_vals(n, arma::fill::zeros);
+  arma::vec hat(n, arma::fill::zeros);
+  arma::rowvec x0(k, arma::fill::zeros);
+  for(int i=0; i < n; i++){
+    x0 = X.row(i);
+    // Determine weights using a multivariate Gaussian Kernel
+    arma::vec w = dmvnrm(X, x0, H);
+    // Scale X and Y by weights
+    // X.each_col() %= sqrt(w);
+    // Solve OLS using economical QR decomposition
+    arma::mat Q, R;
+    arma::qr_econ(Q, R, X.each_col() % sqrt(w));
+    arma::vec beta = solve(R, (Q.t() * (y%sqrt(w))));
+    pred_vals(i) = arma::as_scalar(x0*beta);
+    // Find diagonal of hat matrix
+    hat(i) = hatdiag(Q, w, i);
+  }
+  List listout = List::create(Named("pred_vals") = pred_vals,
+                              Named("hat_diagonals") = hat);
+  return listout;
+}
