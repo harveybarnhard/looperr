@@ -15,7 +15,7 @@ lines(X[,2], predvals[[1]], col="#00CCCC", lwd=2)
 lines(X[,2], predvals[[2]], col="#FFCC33", lwd=2)
 lines(X[,2], predvals[[3]], col="#CC0000", lwd=2)
 legend(x=0.5,y=-1,
-       legend=c("Big Bandwidth", "Optimal Bandwidth", "Small Bandwidth"),
+       legend=c("Large Bandwidth", "Optimal Bandwidth", "Small Bandwidth"),
        col=c("#00CCCC", "#FFCC33", "#CC0000"), lty=1, lwd=2, box.lty=0, bg=NA)
 dev.off()
 
