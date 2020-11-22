@@ -34,28 +34,28 @@ BEGIN_RCPP
 END_RCPP
 }
 // loclin_gauss
-Rcpp::List loclin_gauss(arma::mat& X, arma::mat& H, arma::vec& y);
+Rcpp::List loclin_gauss(arma::mat const& X, arma::mat const& H, arma::vec const& y);
 RcppExport SEXP _looperr_loclin_gauss(SEXP XSEXP, SEXP HSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type H(HSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type H(HSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
     rcpp_result_gen = Rcpp::wrap(loclin_gauss(X, H, y));
     return rcpp_result_gen;
 END_RCPP
 }
-// loocv
-double loocv(arma::mat& X, arma::mat& H, arma::vec& y);
-RcppExport SEXP _looperr_loocv(SEXP XSEXP, SEXP HSEXP, SEXP ySEXP) {
+// loocv_gauss
+double loocv_gauss(arma::mat const& X, arma::mat const& H, arma::vec const& y);
+RcppExport SEXP _looperr_loocv_gauss(SEXP XSEXP, SEXP HSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type H(HSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(loocv(X, H, y));
+    Rcpp::traits::input_parameter< arma::mat const& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type H(HSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(loocv_gauss(X, H, y));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -64,7 +64,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_looperr_fastols", (DL_FUNC) &_looperr_fastols, 3},
     {"_looperr_dmvnrm", (DL_FUNC) &_looperr_dmvnrm, 4},
     {"_looperr_loclin_gauss", (DL_FUNC) &_looperr_loclin_gauss, 3},
-    {"_looperr_loocv", (DL_FUNC) &_looperr_loocv, 3},
+    {"_looperr_loocv_gauss", (DL_FUNC) &_looperr_loocv_gauss, 3},
     {NULL, NULL, 0}
 };
 

@@ -8,11 +8,11 @@ using a Gaussian Kernel.}
 loclin_gauss(X, H, y)
 }
 \arguments{
-\item{\code{X}:}{an nxk data matrix}
+\item{X:}{an nxk data matrix}
 
-\item{\code{H}:}{a kxk positive definite bandwidth matrix}
+\item{H:}{a kxk positive definite bandwidth matrix}
 
-\item{\code{y}:}{The nx1 output vector}
+\item{y:}{The nx1 output vector}
 }
 \description{
 Function that performs local linear regression

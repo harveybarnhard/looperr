@@ -19,9 +19,9 @@ dmvnrm <- function(x, mean, chol_sigma, logd = FALSE) {
 #' Function that performs local linear regression
 #' using a Gaussian Kernel.
 #'
-#' @param \code{X}: an nxk data matrix
-#' @param \code{H}: a kxk positive definite bandwidth matrix
-#' @param \code{y}: The nx1 output vector
+#' @param X: an nxk data matrix
+#' @param H: a kxk positive definite bandwidth matrix
+#' @param y: The nx1 output vector
 #' @export
 loclin_gauss <- function(X, H, y) {
     .Call('_looperr_loclin_gauss', PACKAGE = 'looperr', X, H, y)
@@ -33,7 +33,7 @@ loclin_gauss <- function(X, H, y) {
 #' @param \code{H}: a kxk positive definite bandwidth matrix
 #' @param \code{y}: The nx1 output vector
 #' @export
-loocv <- function(X, H, y) {
-    .Call('_looperr_loocv', PACKAGE = 'looperr', X, H, y)
+loocv_gauss <- function(X, H, y) {
+    .Call('_looperr_loocv_gauss', PACKAGE = 'looperr', X, H, y)
 }
 

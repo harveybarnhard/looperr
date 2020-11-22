@@ -69,12 +69,14 @@ double hatdiag(arma::mat const &Q, arma::vec const &w, int const &i) {
 //' Function that performs local linear regression
 //' using a Gaussian Kernel.
 //'
-//' @param \code{X}: an nxk data matrix
-//' @param \code{H}: a kxk positive definite bandwidth matrix
-//' @param \code{y}: The nx1 output vector
+//' @param X: an nxk data matrix
+//' @param H: a kxk positive definite bandwidth matrix
+//' @param y: The nx1 output vector
 //' @export
 // [[Rcpp::export]]
-Rcpp::List loclin_gauss(arma::mat& X, arma::mat& H, arma::vec& y) {
+Rcpp::List loclin_gauss(arma::mat const &X,
+                        arma::mat const &H,
+                        arma::vec const &y) {
   int n = X.n_rows, k = X.n_cols;
   arma::uvec colind = arma::regspace<arma::uvec>(1,1,k - 1);
   arma::vec pred_vals(n, arma::fill::zeros);
@@ -100,8 +102,9 @@ Rcpp::List loclin_gauss(arma::mat& X, arma::mat& H, arma::vec& y) {
     // Find diagonal of hat matrix
     hat(i) = hatdiag(Q, w, i);
   }
-  List listout = List::create(Named("pred_vals") = pred_vals,
-                              Named("hatdiag")   = hat);
+  arma::vec pred_err = (y - pred_vals) / (1 - hat);
+  List listout = List::create(Named("pred_vals")    = pred_vals,
+                              Named("loo_pred_err") = pred_err);
   return listout;
 }
 //' Function that returns LOOCV score using Gaussian kernel
@@ -111,10 +114,9 @@ Rcpp::List loclin_gauss(arma::mat& X, arma::mat& H, arma::vec& y) {
 //' @param \code{y}: The nx1 output vector
 //' @export
 // [[Rcpp::export]]
-double loocv(arma::mat& X, arma::mat& H, arma::vec& y) {
+double loocv_gauss(arma::mat const &X, arma::mat const &H, arma::vec const &y) {
   Rcpp::List L = loclin_gauss(X, H, y);
-  arma::vec pred_vals = L["pred_vals"];
-  arma::vec hatdiag = L["hatdiag"];
-  double cvscore = sum(pow((y - pred_vals) / (1 - hatdiag),2));
+  arma::vec pred_err = L["loo_pred_err"];
+  double cvscore = as_scalar(sum(pow(pred_err,2)));
   return cvscore;
 }
