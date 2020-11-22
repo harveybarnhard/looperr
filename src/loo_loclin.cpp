@@ -4,7 +4,7 @@
 using namespace Rcpp;
 
 // ------------------------------------------------
-// Multivariate density function: copied from
+// Multivariate density function: modified from
 // https://gallery.rcpp.org/articles/dmvnorm_arma/
 // ------------------------------------------------
 static double const log2pi = std::log(2.0 * M_PI);
@@ -23,13 +23,13 @@ void inplace_tri_mat_mult(arma::rowvec &x, arma::mat const &trimat){
 // [[Rcpp::export]]
 arma::vec dmvnrm(arma::mat const &x,
                            arma::rowvec const &mean,
-                           arma::mat const &sigma,
+                           arma::mat const &chol_sigma,
                            bool const logd = false) {
   using arma::uword;
   uword const n = x.n_rows,
     xdim = x.n_cols;
   arma::vec out(n);
-  arma::mat const rooti = arma::inv(trimatu(arma::chol(sigma)));
+  arma::mat const rooti = arma::inv(trimatu(chol_sigma));
   double const rootisum = arma::sum(log(rooti.diag())),
     constants = -(double)xdim/2.0 * log2pi,
     other_terms = rootisum + constants;
@@ -51,7 +51,7 @@ arma::vec dmvnrm(arma::mat const &x,
 // Function that performs OLS regression template using
 // https://dannyjameswilliams.co.uk/portfolios/sc2/rcpp/
 // ------------------------------------------------------
-arma::vec fastols(arma::vec& y, arma::mat& X) {
+arma::vec fastols(arma::vec const &y, arma::mat const &X) {
   // Solve OLS using fast QR decomposition
   arma::mat Q, R;
   arma::qr_econ(Q, R, X);
@@ -66,7 +66,7 @@ arma::vec fastols(arma::vec& y, arma::mat& X) {
 // https://stackoverflow.com/questions/20562177/get-hat-matrix-from-qr-decomposition-for-weighted-least-square-regression
 // -------------------------------------------------
 // [[Rcpp::export]]
-double hatdiag(arma::mat& Q, arma::vec& w, int &i) {
+double hatdiag(arma::mat const &Q, arma::vec const &w, int const &i) {
   // Rescale Q by weights
   arma::mat Q1 = Q.each_col() / sqrt(w);
   arma::mat Q2 = Q.each_col() % sqrt(w);
@@ -88,18 +88,22 @@ double hatdiag(arma::mat& Q, arma::vec& w, int &i) {
 //' @param \code{y}: The nx1 output vector
 //' @export
 // [[Rcpp::export]]
-Rcpp::List loclin_gauss(arma::mat& X,
-                        arma::mat& H,
-                        arma::vec& y) {
+Rcpp::List loclin_gauss(arma::mat& X, arma::mat& H, arma::vec& y) {
   int n = X.n_rows, k = X.n_cols;
   arma::uvec colind = arma::regspace<arma::uvec>(1,1,k - 1);
   arma::vec pred_vals(n, arma::fill::zeros);
   arma::vec hat(n, arma::fill::zeros);
   arma::rowvec x0(k, arma::fill::zeros);
+
+  // Perform Cholesky decomposition of H
+  arma::mat cholH = H;
+  if(k > 2) {
+    cholH = arma::chol(H);
+  }
   for(int i=0; i < n; i++){
     x0 = X.row(i);
     // Determine weights using a multivariate Gaussian Kernel
-    arma::vec w = dmvnrm(X.cols(colind), x0(colind), H);
+    arma::vec w = dmvnrm(X.cols(colind), x0(colind), cholH);
     // Scale X and Y by weights
     // X.each_col() %= sqrt(w);
     // Solve OLS using economical QR decomposition
@@ -111,6 +115,20 @@ Rcpp::List loclin_gauss(arma::mat& X,
     hat(i) = hatdiag(Q, w, i);
   }
   List listout = List::create(Named("pred_vals") = pred_vals,
-                              Named("hat_diagonals") = hat);
+                              Named("hatdiag") = hat);
   return listout;
+}
+//' Function that returns LOOCV score using Gaussian kernel
+//'
+//' @param \code{X}: an nxk data matrix
+//' @param \code{H}: a kxk positive definite bandwidth matrix
+//' @param \code{y}: The nx1 output vector
+//' @export
+// [[Rcpp::export]]
+double loocv(arma::mat& X, arma::mat& H, arma::vec& y) {
+  Rcpp::List L = loclin_gauss(X, H, y);
+  arma::vec pred_vals = L["pred_vals"];
+  arma::vec hatdiag = L["hatdiag"];
+  double cvscore = sum(pow((y - pred_vals) / (1 - hatdiag),2));
+  return cvscore;
 }

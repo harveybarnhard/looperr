@@ -7,28 +7,28 @@
 using namespace Rcpp;
 
 // dmvnrm
-arma::vec dmvnrm(arma::mat const& x, arma::rowvec const& mean, arma::mat const& sigma, bool const logd);
-RcppExport SEXP _looperr_dmvnrm(SEXP xSEXP, SEXP meanSEXP, SEXP sigmaSEXP, SEXP logdSEXP) {
+arma::vec dmvnrm(arma::mat const& x, arma::rowvec const& mean, arma::mat const& chol_sigma, bool const logd);
+RcppExport SEXP _looperr_dmvnrm(SEXP xSEXP, SEXP meanSEXP, SEXP chol_sigmaSEXP, SEXP logdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat const& >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::rowvec const& >::type mean(meanSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type chol_sigma(chol_sigmaSEXP);
     Rcpp::traits::input_parameter< bool const >::type logd(logdSEXP);
-    rcpp_result_gen = Rcpp::wrap(dmvnrm(x, mean, sigma, logd));
+    rcpp_result_gen = Rcpp::wrap(dmvnrm(x, mean, chol_sigma, logd));
     return rcpp_result_gen;
 END_RCPP
 }
 // hatdiag
-double hatdiag(arma::mat& Q, arma::vec& w, int& i);
+double hatdiag(arma::mat const& Q, arma::vec const& w, int const& i);
 RcppExport SEXP _looperr_hatdiag(SEXP QSEXP, SEXP wSEXP, SEXP iSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type Q(QSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< int& >::type i(iSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type Q(QSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type w(wSEXP);
+    Rcpp::traits::input_parameter< int const& >::type i(iSEXP);
     rcpp_result_gen = Rcpp::wrap(hatdiag(Q, w, i));
     return rcpp_result_gen;
 END_RCPP
@@ -46,11 +46,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// loocv
+double loocv(arma::mat& X, arma::mat& H, arma::vec& y);
+RcppExport SEXP _looperr_loocv(SEXP XSEXP, SEXP HSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type H(HSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(loocv(X, H, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_looperr_dmvnrm", (DL_FUNC) &_looperr_dmvnrm, 4},
     {"_looperr_hatdiag", (DL_FUNC) &_looperr_hatdiag, 3},
     {"_looperr_loclin_gauss", (DL_FUNC) &_looperr_loclin_gauss, 3},
+    {"_looperr_loocv", (DL_FUNC) &_looperr_loocv, 3},
     {NULL, NULL, 0}
 };
 
