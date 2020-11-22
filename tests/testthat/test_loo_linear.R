@@ -1,0 +1,20 @@
+context("Test loo_loclin()")
+library(looperr)
+
+set.seed(1234)
+n = 200
+X = cbind(rep(1, n),seq(1,10, length.out=n))
+w = rep(1, n)
+y = sin(X[,2]) + rnorm(n, sd=0.5)
+H = X%*%solve(crossprod(X, X))%*%t(X)
+fastout = fastols(X, y, w)
+origout = lm(y ~ X[,2])
+
+test_that("fastols compared to lm, no weights", {
+  expect_equal(as.vector(fastout$beta),
+               as.vector(origout$coefficients))
+  expect_equal(as.vector(fastout$hatdiag),
+               as.vector(diag(H)))
+  expect_equal(as.vector(fastout$loo_pred_err),
+               as.vector(origout$residuals/(1-diag(H))))
+})

@@ -46,26 +46,12 @@ arma::vec dmvnrm(arma::mat const &x,
   return exp(out);
 }
 
-
-// ------------------------------------------------------
-// Function that performs OLS regression template using
-// https://dannyjameswilliams.co.uk/portfolios/sc2/rcpp/
-// ------------------------------------------------------
-arma::vec fastols(arma::vec const &y, arma::mat const &X) {
-  // Solve OLS using fast QR decomposition
-  arma::mat Q, R;
-  arma::qr_econ(Q, R, X);
-  arma::vec beta = solve(R, (Q.t() * y));
-  return beta;
-}
-
 // -------------------------------------------------
 // Function that finds diagonal of hat matrix given
 // the Q of the QR factorization and a vector of
 // weights
 // https://stackoverflow.com/questions/20562177/get-hat-matrix-from-qr-decomposition-for-weighted-least-square-regression
 // -------------------------------------------------
-// [[Rcpp::export]]
 double hatdiag(arma::mat const &Q, arma::vec const &w, int const &i) {
   // Rescale Q by weights
   arma::mat Q1 = Q.each_col() / sqrt(w);
@@ -115,7 +101,7 @@ Rcpp::List loclin_gauss(arma::mat& X, arma::mat& H, arma::vec& y) {
     hat(i) = hatdiag(Q, w, i);
   }
   List listout = List::create(Named("pred_vals") = pred_vals,
-                              Named("hatdiag") = hat);
+                              Named("hatdiag")   = hat);
   return listout;
 }
 //' Function that returns LOOCV score using Gaussian kernel

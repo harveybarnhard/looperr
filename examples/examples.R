@@ -19,7 +19,5 @@ legend(x=0.5,y=-1,
        col=c("#00CCCC", "#FFCC33", "#CC0000"), lty=1, lwd=2, box.lty=0, bg=NA)
 dev.off()
 
-
-
-# Optimal bandwidth
+# Optimal bandwidth selection for the above example
 opth = optim(1, function(x) loocv(X, matrix(x), y), lower=0.1,upper=20, method="Brent")$par
