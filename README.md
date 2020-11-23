@@ -43,3 +43,20 @@ legend(x=0.5,y=-1,
                 "Small Bandwidth: 0.1"),
        col=c("#00CCCC", "#FFCC33", "#CC0000"), lty=1, lwd=2, box.lty=0, bg=NA)
 ```
+
+One can go further and easily analyze the leave-one-out prediction error point-by-point.
+This is often more useful than analyzing residuals because a residual can be small
+simply due to that point exerting high-leverage on the line of best fit, but would
+actually have a large residual if you were to leave out that point from the regression
+and then predict $\hat{y}$. Here's an example
+of how to analyze the leave-one-out prediction errors as outputted
+from the calls to `linsmooth()` above.
+
+```r
+# Smooth the prediction errors
+predvals_meta = list()
+predvals_meta[[3]] = linsmooth(X, predvals[[3]]$loo_pred_err)
+predvals_meta[[4]] = linsmooth(X, predvals[[4]]$loo_pred_err)
+
+# Plot the predic
+```
