@@ -20,7 +20,6 @@ fastols <- function(X, y, w) {
 #' @param y The nx1 output vector
 #' @param Xeval an mxp matrix at which to predict using local linear regression
 #' @param sameX logical; Are the evaluation points the same as X?
-#' @export
 loclin_gauss <- function(X, H, y, Xeval, sameX) {
     .Call('_looperr_loclin_gauss', PACKAGE = 'looperr', X, H, y, Xeval, sameX)
 }
@@ -30,7 +29,6 @@ loclin_gauss <- function(X, H, y, Xeval, sameX) {
 #' @param X: an nxk data matrix
 #' @param H: a kxk positive definite bandwidth matrix
 #' @param y: The nx1 output vector
-#' @export
 loocv_gauss <- function(X, H, y) {
     .Call('_looperr_loocv_gauss', PACKAGE = 'looperr', X, H, y)
 }

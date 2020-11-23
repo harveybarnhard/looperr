@@ -2,7 +2,6 @@ context("Test loo_loclin()")
 library(looperr)
 
 test_that("fastols compared to lm, no weights", {
-  set.seed(1234)
   n = 200
   X = cbind(rep(1, n),seq(1,10, length.out=n))
   w = rep(1, n)
@@ -19,7 +18,6 @@ test_that("fastols compared to lm, no weights", {
 })
 
 test_that("fastols compared to lm, with weights", {
-  set.seed(1234)
   n = 200
   X = cbind(rep(1, n),seq(1,10, length.out=n))
   w = runif(n, 0, 1)

@@ -73,7 +73,6 @@ double hatdiag(arma::mat const &Q, arma::vec const &w, int const &i) {
 //' @param y The nx1 output vector
 //' @param Xeval an mxp matrix at which to predict using local linear regression
 //' @param sameX logical; Are the evaluation points the same as X?
-//' @export
 // [[Rcpp::export]]
 Rcpp::List loclin_gauss(arma::mat const &X,
                         arma::mat const &H,
@@ -109,8 +108,8 @@ Rcpp::List loclin_gauss(arma::mat const &X,
   if(sameX==1){
     pred_err = (y - pred_vals) / (1 - hat);
   }
-  List listout = List::create(Named("pred_vals")    = pred_vals,
-                              Named("loo_pred_err") = pred_err);
+  List listout = List::create(Named("fitted.values") = pred_vals,
+                              Named("loo_pred_err")  = pred_err);
   return listout;
 }
 //' Function that returns LOOCV score using Gaussian kernel
@@ -118,7 +117,6 @@ Rcpp::List loclin_gauss(arma::mat const &X,
 //' @param X: an nxk data matrix
 //' @param H: a kxk positive definite bandwidth matrix
 //' @param y: The nx1 output vector
-//' @export
 // [[Rcpp::export]]
 double loocv_gauss(arma::mat const &X, arma::mat const &H, arma::vec const &y) {
   Rcpp::List L = loclin_gauss(X, H, y, X, 1);

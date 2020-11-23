@@ -9,7 +9,7 @@ test_that("loo_loclin Correct LOO error", {
   total = loclin_gauss(X, matrix(1), y, X, 1)
   loout = loclin_gauss(X[-looind,], matrix(1), y[-looind], X, 0)
   total_looer = total$loo_pred_err[looind]
-  loout_looer = y[looind]-loout$pred_vals[looind]
+  loout_looer = y[looind]-loout$fitted.values[looind]
   expect_equal(loout_looer, total_looer)
 })
 
