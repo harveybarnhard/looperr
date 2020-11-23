@@ -4,12 +4,23 @@
 \alias{linsmooth}
 \title{This function performs linear smoothing}
 \usage{
-linsmooth(X = NULL, y = NULL, method = "loclin", w = NULL, kernel = "gauss")
+linsmooth(
+  X,
+  y,
+  Xeval = X,
+  method = "loclin",
+  w = NULL,
+  kernel = "gauss",
+  H = NULL
+)
 }
 \arguments{
-\item{X}{numeric matrix; an nxk data matrix}
+\item{X}{numeric matrix; an nxk data matrix of observations}
 
 \item{y}{numeric vector;an nx1 response vector}
+
+\item{Xeval}{numeric matrix; mxk data matrix where the linear smoother should
+produced predicted values of y. Defaults to X.}
 
 \item{method}{character; "ols" for linear regression or "loclin" for
 local linear regression}
@@ -19,6 +30,9 @@ not used for method "loclin", optional for "ols"}
 
 \item{kernel}{character; kernel used if method is "loclin". Defaults to
 "gauss", the Gaussian kernel.}
+
+\item{H}{matrix; Bandwidth matrix used if "loclin" method is used. Defaults
+to a diagonal matrix being optimized by minimizing LOOCV score.}
 }
 \description{
 This function performs linear smoothing

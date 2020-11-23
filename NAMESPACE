@@ -2,8 +2,6 @@
 
 export(fastols)
 export(linsmooth)
-export(loclin_gauss)
-export(loocv_gauss)
 exportPattern("^[[:alpha:]]+")
 import(RcppArmadillo)
 importFrom(Rcpp,evalCpp)

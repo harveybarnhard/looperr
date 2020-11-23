@@ -26,9 +26,11 @@ Rcpp::List fastols(arma::mat& X, arma::vec& y, arma::vec& w) {
   arma::mat Q2 = Q.each_col() % sqrt(w);
   arma::vec hat = sum(Q1%Q2,1);
   // Find LOO prediction error
-  arma::vec pred_err = (y - X*beta) / (1 - hat);
-  List listout = List::create(Named("beta")     = beta,
-                              Named("hatdiag")  = hat,
-                              Named("loo_pred_err") = pred_err);
+  arma::vec fittedy = X*beta;
+  arma::vec pred_err = (y - fittedy) / (1 - hat);
+  List listout = List::create(Named("beta")          = beta,
+                              Named("hatdiag")       = hat,
+                              Named("loo_pred_err")  = pred_err,
+                              Named("fitted.values") = fittedy);
   return listout;
 }

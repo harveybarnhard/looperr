@@ -39,10 +39,26 @@ predvals_meta[[4]] = linsmooth(X, predvals[[4]]$loo_pred_err)
 # Plot the prediction error points and the fitted curves
 png(filename="examples/looperr_example2.png", width=800, height=480)
 plot(x=X[,2], y=predvals[[4]]$loo_pred_err, col="#CC0000", pch=16, cex=0.9,
-     axes=FALSE, xaxt="n", yaxt="n", ann=FALSE)
+     ylab = "Leave-One-Out Prediction Error", xlab="")
 points(x=X[,2], y=predvals[[3]]$loo_pred_err, col="#00CCCC", pch=16, cex=0.9)
 lines(x=X[,2], y=predvals_meta[[4]]$fitted.values, col="#CC0000", lwd=2)
 lines(x=X[,2], y=predvals_meta[[3]]$fitted.values, col="#00CCCC", lwd=2)
+
+# Add a legend
+legend(x=1,y=-1.4,
+       legend=c("Linear Regression" ,
+                "Local Linear Regression"),
+       col=c("#CC0000", "#00CCCC"), lty=1, lwd=2, box.lty=0, bg=NA)
+dev.off()
+
+# Smooth the residuals
+resid_loc = y-predvals[[3]]$fitted.values
+resid_lin = y-predvals[[4]]$fitted.values
+# Plot the prediction error points and the fitted curves
+png(filename="examples/looperr_example2.png", width=800, height=480)
+plot(x=resid_lin, y=predvals[[4]]$loo_pred_err, col="#CC0000", pch=16, cex=0.9,
+     ylab = "Leave-One-Out Prediction Error", xlab="")
+points(x=resid_loc, y=predvals[[3]]$loo_pred_err, col="#00CCCC", pch=16, cex=0.9)
 
 # Add a legend
 legend(x=1,y=-1.4,
