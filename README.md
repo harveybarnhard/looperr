@@ -6,7 +6,7 @@ using a multivariate Gaussian kernel.
 
 Fast implementation in C++ using stable QR decomposition method.
 
-![](examples/looperr_example.png)
+![test](examples/looperr_example.png)
 
 # Theory
 
