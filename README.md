@@ -6,7 +6,7 @@ using a multivariate Gaussian kernel.
 
 Fast implementation in C++ using stable QR decomposition method.
 
-![](examples/looperr_example.png)
+![](examples/looperr_example1.png)
 
 # Theory
 
@@ -46,10 +46,10 @@ legend(x=0.5,y=-1,
 
 One can go further and easily analyze the leave-one-out prediction error point-by-point.
 This is often more useful than analyzing residuals because a residual can be small
-simply due to that point exerting high-leverage on the line of best fit, but would
-actually have a large residual if you were to leave out that point from the regression
-and then predict $\hat{y}$. Here's an example
-of how to analyze the leave-one-out prediction errors as outputted
+simply due to that point exerting high-leverage on the line of best fit. But
+if you were to leave out that point from the regression, you might actually find
+a large residual from the prediction of the response on the left out point.
+Here's an example of how to analyze the leave-one-out prediction errors as outputted
 from the calls to `linsmooth()` above.
 
 ```r
@@ -58,5 +58,17 @@ predvals_meta = list()
 predvals_meta[[3]] = linsmooth(X, predvals[[3]]$loo_pred_err)
 predvals_meta[[4]] = linsmooth(X, predvals[[4]]$loo_pred_err)
 
-# Plot the predic
+# Plot the prediction error points and the fitted curves
+plot(x=X[,2], y=predvals[[4]]$loo_pred_err, col="#CC0000", pch=16, cex=0.9)
+points(x=X[,2], y=predvals[[3]]$loo_pred_err, col="#00CCCC", pch=16, cex=0.9)
+lines(x=X[,2], y=predvals_meta[[4]]$fitted.values, col="#CC0000", lwd=2)
+lines(x=X[,2], y=predvals_meta[[3]]$fitted.values, col="#00CCCC", lwd=2)
+
+# Add a legend
+legend(x=1,y=-1.4,
+       legend=c("Linear Regression" ,
+                "Local Linear Regression"),
+       col=c("#CC0000", "#00CCCC"), lty=1, lwd=2, box.lty=0, bg=NA)
 ```
+
+![](examples/looperr_example2.png)
