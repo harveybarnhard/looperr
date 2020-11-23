@@ -72,3 +72,9 @@ legend(x=1,y=-1.4,
 ```
 
 ![](examples/looperr_example2.png)
+
+# Setup and Installation
+
+```r
+devtools::install_github()
+```
