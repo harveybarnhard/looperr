@@ -26,9 +26,9 @@ lines(X[,2], predvals[[3]]$fitted.values, col="#00CCCC", lwd=2)
 legend(x=0.5,y=-1,
        legend=c("Large Bandwidth: 2" ,
                 paste0("Optimal Bandwidth: ",
-                       round(predvals[[2]]$bandwidth,2)),
+                       round(predvals[[3]]$bandwidth,2)),
                 "Small Bandwidth: 0.1"),
-       col=c("#FFCC33", "#CC0000", "#00CCCC"), lty=1, lwd=2, box.lty=0, bg=NA)
+       col=c("#FFCC33", "#00CCCC", "#CC0000"), lty=1, lwd=2, box.lty=0, bg=NA)
 dev.off()
 
 # Smooth the prediction errors

@@ -16,7 +16,7 @@ using namespace Rcpp;
 //' @param w: an nx1 vector of weights
 //' @export
 // [[Rcpp::export]]
-Rcpp::List fastols(arma::mat& X, arma::vec& y, arma::vec& w) {
+Rcpp::List fastols(arma::mat const &X, arma::vec const &y, arma::vec const &w) {
   // Solve OLS using fast QR decomposition
   arma::mat Q, R;
   arma::qr_econ(Q, R, X.each_col() % sqrt(w));
