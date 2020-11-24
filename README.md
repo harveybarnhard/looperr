@@ -71,10 +71,12 @@ legend(x=1,y=-1.4,
        col=c("#CC0000", "#00CCCC"), lty=1, lwd=2, box.lty=0, bg=NA)
 ```
 
+TODO: compare residuals vs. prediction error.
+
 ![](examples/looperr_example2.png)
 
 # Setup and Installation
 
 ```r
-devtools::install_github()
+devtools::install_github("harveybarnhard/looperr")
 ```
