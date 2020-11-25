@@ -1,8 +1,8 @@
 # looperr
 An R Package for evaluating leave-one-out (loo) prediction error (perr)
 of linear smoothers.
-Currently only works for linear regression and local polynomial regression
-using a multivariate Gaussian kernel.
+Currently methods include linear regression, local polynomial regression
+with Gaussian or Epanechnikov kernel.
 
 Fast implementation in C++ using stable QR decomposition method.
 
