@@ -10,7 +10,8 @@
 #'     not used for method "loclin", optional for "ols"
 #' @param kernel character; kernel used if method is "loclin". Defaults to
 #'     "gauss", the Gaussian kernel.
-#' @param H matrix; Bandwidth matrix used if "loclin" method is used. Defaults
+#' @param H positive vector; Bandwidth vector that represents diagonal of
+#'     bandwidth matrix used if "loclin" method is used. Defaults
 #'     to a diagonal matrix being optimized by minimizing LOOCV score.
 #' @export
 linsmooth = function(X,
@@ -45,7 +46,7 @@ linsmooth = function(X,
       }
     }
     output = loclin(X, diag(H, k-1, k-1), y, Xeval, 1, kern)
-    output["bandwidth"] = opth
+    output["bandwidth"] = H
   }else if(method=="ols"){
     if(is.null(w)){
       w = rep(1, length(y))

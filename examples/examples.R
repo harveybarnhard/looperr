@@ -8,9 +8,9 @@ H = list(matrix(2), matrix(0.1))
 
 # Perform local linear regression with three bandwidth matrices
 predvals = list()
-predvals[[1]] = linsmooth(X, y, H=matrix(2))    # Large bandwidth
-predvals[[2]] = linsmooth(X, y, H= matrix(0.1)) # Small bandwidth
-predvals[[3]] = linsmooth(X, y)                 # Optimal bandwidth
+predvals[[1]] = linsmooth(X, y, H=2)    # Large bandwidth
+predvals[[2]] = linsmooth(X, y, H=0.1)  # Small bandwidth
+predvals[[3]] = linsmooth(X, y)         # Optimal bandwidth
 
 # Perform linear regression
 predvals[[4]] = linsmooth(X, y, method="ols")
@@ -55,7 +55,7 @@ dev.off()
 resid_loc = y-predvals[[3]]$fitted.values
 resid_lin = y-predvals[[4]]$fitted.values
 # Plot the prediction error points and the fitted curves
-png(filename="examples/looperr_example2.png", width=800, height=480)
+png(filename="examples/looperr_example3.png", width=800, height=480)
 plot(x=resid_lin, y=predvals[[4]]$loo_pred_err, col="#CC0000", pch=16, cex=0.9,
      ylab = "Leave-One-Out Prediction Error", xlab="")
 points(x=resid_loc, y=predvals[[3]]$loo_pred_err, col="#00CCCC", pch=16, cex=0.9)
