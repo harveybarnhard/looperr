@@ -74,3 +74,10 @@ dt = data.table::melt(dt, measure.vars=patterns("^V"), value.name="Z",
                       variable.factor=FALSE)
 data.table::setnames(dt, old="variable", new="X")
 dt[, X:= as.numeric(substr(X, 2, nchar(X)))]
+dt[, Znoise := Z + rnorm(nrow(dt), mean=0, sd=10)]
+test = linsmooth(cbind(dt$X, dt$Y), dt$Znoise, H=c(1,2))
+dt[, Zsmooth := linsmooth(X, )]
+
+fig = plot_ly(dt, x= ~X, y= ~Y, z= ~Znoise)
+fig = fig %>% add_markers(size=1, color=)
+add_markers(plot_ly(dt, x= ~X, y= ~Y, z= ~Znoise), size=1)
