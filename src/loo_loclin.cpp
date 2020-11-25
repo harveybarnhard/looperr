@@ -56,7 +56,7 @@ arma::vec epankern(arma::vec const &x,
   arma::uword const n = x.n_rows;
   arma::vec out(n, arma::fill::zeros);
   double hsca = arma::as_scalar(h);
-  arma::vec u = (x.each_row() - mean)/hsca;
+  arma::vec u = arma::abs((x.each_row() - mean))/hsca;
   for(arma::uword i = 0; i < n; i++){
     if(arma::as_scalar(u(i))<1){
       out(i) = 3*(1-pow(arma::as_scalar(u(i)), 2))/4;
