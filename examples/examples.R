@@ -51,9 +51,9 @@ legend(x=1,y=-1.4,
        col=c("#CC0000", "#00CCCC"), lty=1, lwd=2, box.lty=0, bg=NA)
 dev.off()
 
-# Smooth the residuals
-resid_loc = y-predvals[[3]]$fitted.values
-resid_lin = y-predvals[[4]]$fitted.values
+# Smooth the residuals =========================================================
+resid_diff = y-predvals[[3]]$fitted.values - y-predvals[[4]]$fitted.values
+resid_smooth = linsmooth(X, resid_diff)
 # Plot the prediction error points and the fitted curves
 png(filename="examples/looperr_example3.png", width=800, height=480)
 plot(x=resid_lin, y=predvals[[4]]$loo_pred_err, col="#CC0000", pch=16, cex=0.9,
@@ -66,3 +66,11 @@ legend(x=1,y=-1.4,
                 "Local Linear Regression"),
        col=c("#CC0000", "#00CCCC"), lty=1, lwd=2, box.lty=0, bg=NA)
 dev.off()
+
+# 3D example ===================================================================
+dt = data.table::data.table(volcano)
+dt[, Y:=1:nrow(volcano)]
+dt = data.table::melt(dt, measure.vars=patterns("^V"), value.name="Z",
+                      variable.factor=FALSE)
+data.table::setnames(dt, old="variable", new="X")
+dt[, X:= as.numeric(substr(X, 2, nchar(X)))]
