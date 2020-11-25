@@ -13,23 +13,15 @@ fastols <- function(X, y, w) {
 }
 
 #' Function that performs local linear regression
-#' using a Gaussian Kernel.
+#' using Gaussian or Epanechnikov kernel.
 #'
 #' @param X an nxk data matrix
 #' @param H a kxk positive definite bandwidth matrix
 #' @param y The nx1 output vector
 #' @param Xeval an mxp matrix at which to predict using local linear regression
-#' @param sameX logical; Are the evaluation points the same as X?
-loclin_gauss <- function(X, H, y, Xeval, sameX) {
-    .Call('_looperr_loclin_gauss', PACKAGE = 'looperr', X, H, y, Xeval, sameX)
-}
-
-#' Function that returns LOOCV score using Gaussian kernel
-#'
-#' @param X: an nxk data matrix
-#' @param H: a kxk positive definite bandwidth matrix
-#' @param y: The nx1 output vector
-loocv_gauss <- function(X, H, y) {
-    .Call('_looperr_loocv_gauss', PACKAGE = 'looperr', X, H, y)
+#' @param sameX binary; Are the evaluation points the same as X? One for yes.
+#' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+loclin <- function(X, H, y, Xeval, sameX, kernel) {
+    .Call('_looperr_loclin', PACKAGE = 'looperr', X, H, y, Xeval, sameX, kernel)
 }
 

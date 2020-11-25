@@ -8,9 +8,9 @@ H = list(matrix(2), matrix(0.1))
 
 # Perform local linear regression with three bandwidth matrices
 predvals = list()
-predvals[[1]] = linsmooth(X, y, H=H[[1]])
-predvals[[2]] = linsmooth(X, y, H=H[[2]])
-predvals[[3]] = linsmooth(X, y)
+predvals[[1]] = linsmooth(X, y, H=matrix(2))    # Large bandwidth
+predvals[[2]] = linsmooth(X, y, H= matrix(0.1)) # Small bandwidth
+predvals[[3]] = linsmooth(X, y)                 # Optimal bandwidth
 
 # Perform linear regression
 predvals[[4]] = linsmooth(X, y, method="ols")

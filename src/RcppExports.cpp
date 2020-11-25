@@ -7,21 +7,21 @@
 using namespace Rcpp;
 
 // fastols
-Rcpp::List fastols(arma::mat& X, arma::vec& y, arma::vec& w);
+Rcpp::List fastols(arma::mat const& X, arma::vec const& y, arma::vec const& w);
 RcppExport SEXP _looperr_fastols(SEXP XSEXP, SEXP ySEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type w(wSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type w(wSEXP);
     rcpp_result_gen = Rcpp::wrap(fastols(X, y, w));
     return rcpp_result_gen;
 END_RCPP
 }
-// loclin_gauss
-Rcpp::List loclin_gauss(arma::mat const& X, arma::mat const& H, arma::vec const& y, arma::mat const& Xeval, int const& sameX);
-RcppExport SEXP _looperr_loclin_gauss(SEXP XSEXP, SEXP HSEXP, SEXP ySEXP, SEXP XevalSEXP, SEXP sameXSEXP) {
+// loclin
+Rcpp::List loclin(arma::mat const& X, arma::mat const& H, arma::vec const& y, arma::mat const& Xeval, int const& sameX, int const& kernel);
+RcppExport SEXP _looperr_loclin(SEXP XSEXP, SEXP HSEXP, SEXP ySEXP, SEXP XevalSEXP, SEXP sameXSEXP, SEXP kernelSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -30,28 +30,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::mat const& >::type Xeval(XevalSEXP);
     Rcpp::traits::input_parameter< int const& >::type sameX(sameXSEXP);
-    rcpp_result_gen = Rcpp::wrap(loclin_gauss(X, H, y, Xeval, sameX));
-    return rcpp_result_gen;
-END_RCPP
-}
-// loocv_gauss
-double loocv_gauss(arma::mat const& X, arma::mat const& H, arma::vec const& y);
-RcppExport SEXP _looperr_loocv_gauss(SEXP XSEXP, SEXP HSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat const& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type H(HSEXP);
-    Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(loocv_gauss(X, H, y));
+    Rcpp::traits::input_parameter< int const& >::type kernel(kernelSEXP);
+    rcpp_result_gen = Rcpp::wrap(loclin(X, H, y, Xeval, sameX, kernel));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_looperr_fastols", (DL_FUNC) &_looperr_fastols, 3},
-    {"_looperr_loclin_gauss", (DL_FUNC) &_looperr_loclin_gauss, 5},
-    {"_looperr_loocv_gauss", (DL_FUNC) &_looperr_loocv_gauss, 3},
+    {"_looperr_loclin", (DL_FUNC) &_looperr_loclin, 6},
     {NULL, NULL, 0}
 };
 

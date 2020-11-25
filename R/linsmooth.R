@@ -31,21 +31,23 @@ linsmooth = function(X,
   k = ncol(X)
   # Perform smoothing methods case-by-case
   if(method=="loclin"){
-    if(kernel=="gauss"){
-      if(is.null(H)){
-        if(ncol(X)==2){
-          opth = optim(1, function(h) loocv_gauss(X, matrix(h), y),
-                       lower=0, upper=max(X[,2])-min(X[,2]), method="Brent")$par
-        }else{
-          opth = optim(1, function(h) loocv_gauss(X,diag(h, k-1, k-1), y),
-                       method="Nelder-Mead")
-        }
-      }else{
-        opth = H
-      }
-      output = loclin_gauss(X, matrix(opth), y, Xeval, 1)
-      output["bandwidth"] = opth
+    kern = ifelse(kernel=="gauss", 1L, 2L)
+    if(kern!=1L & k>2){
+      stop("Multivariate smoothing only allowed for kernal='gauss'")
     }
+    if(is.null(H)){
+      if(ncol(X)==2){
+        opth = optim(1, function(h) loclin(X, matrix(h), y, X, sameX=1, kernel=kern)[["cvscore"]],
+                     lower=0, upper=max(X[,2])-min(X[,2]), method="Brent", control=list(maxit=8))$par
+      }else{
+        opth = optim(1, function(h) loclin(X,diag(h, k-1, k-1), y, X, sameX=1, kernel=kern)[["cvscore"]],
+                     method="Nelder-Mead", control=list(maxit=10))$par
+      }
+    }else{
+      opth = H
+    }
+    output = loclin(X, matrix(opth), y, Xeval, 1)
+    output["bandwidth"] = opth
   }else if(method=="ols"){
     if(is.null(w)){
       w = rep(1, length(y))
