@@ -31,7 +31,8 @@ not used for method "loclin", optional for "ols"}
 \item{kernel}{character; kernel used if method is "loclin". Defaults to
 "gauss", the Gaussian kernel.}
 
-\item{H}{matrix; Bandwidth matrix used if "loclin" method is used. Defaults
+\item{H}{positive vector; Bandwidth vector that represents diagonal of
+bandwidth matrix used if "loclin" method is used. Defaults
 to a diagonal matrix being optimized by minimizing LOOCV score.}
 }
 \description{

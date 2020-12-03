@@ -12,9 +12,9 @@ using namespace arma;
 //' Function that performs linear regression
 //' and saves the diagonal of the hat matrix
 //'
-//' @param X: an nxk data matrix
-//' @param y: The nx1 output vector
-//' @param w: an nx1 vector of weights
+//' @param X an nxk numeric data matrix
+//' @param y The nx1 numeric output vector
+//' @param w an nx1 numeric vector of weights
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fastols(arma::mat const &X, arma::vec const &y, arma::vec const &w) {
@@ -43,11 +43,12 @@ Rcpp::List fastols(arma::mat const &X, arma::vec const &y, arma::vec const &w) {
 //' Function that performs linear regression
 //' and saves the diagonal of the hat matrix
 //'
-//' @param X: an nxk data matrix
-//' @param y: The nx1 output vector
-//' @param w: an nx1 vector of weights
+//' @param X an nxk numeric data matrix
+//' @param y The nx1 numeric output vector
+//' @param w an nx1 numeric vector of weights
+//' @param g an nx1 sorted integer vector of groups
 // [[Rcpp::export]]
-Rcpp::List fastols(arma::mat const &X,
+Rcpp::List fastols_by(arma::mat const &X,
                    arma::vec const &y,
                    arma::vec const &w,
                    IntegerVector const &g) {
@@ -61,33 +62,39 @@ Rcpp::List fastols(arma::mat const &X,
             end(nrows, arma::fill::zeros);
   // Find start and endpoints of groupings, assuming g is already sorted
   int cur = g(0);
-  int numgrps = 0;
+  int numgrps = 1;
   for(int i=0; i < nrows; i++){
     if(g(i)!=cur){
-      end(numgrps) = i - 1;
+      end(numgrps - 1) = i - 1;
       numgrps += 1;
-      start(numgrps) = i;
+      start(numgrps - 1) = i;
       cur = g(i);
     }
   }
-  end(numgrps) = nrows;
+  end(numgrps - 1) = nrows - 1;
   start = start.head(numgrps);
   end   = end.head(numgrps);
-
+  // Initialize matrix to store coefficients and loop over groups
+  arma::mat betamat(X.n_cols, numgrps, arma::fill::zeros);
   for(int j=0; j < numgrps; j++){
     // Solve OLS using fast QR decomposition
+    arma::mat Xj = X.rows(start(j), end(j));
+    arma::vec yj = y.subvec(start(j), end(j));
+    arma::vec wj = w.subvec(start(j), end(j));
     arma::mat Q, R;
-    arma::qr_econ(Q, R, X.row(start(j)).each_col() % sqrt(w));
-    arma::vec beta = solve(R, (Q.t()*(y % sqrt(w))));
+    arma::qr_econ(Q, R, Xj.each_col() % sqrt(wj));
+    arma::vec beta = solve(R, (Q.t()*(yj % sqrt(wj))));
+    betamat.col(j) = beta;
     // Find diagonal of hat matrix given the Q of the QR factorization above
-    arma::mat Q1 = Q.each_col() / sqrt(w);
-    arma::mat Q2 = Q.each_col() % sqrt(w);
-    arma::vec hat = sum(Q1%Q2,1);
-    // Find LOO prediction error
-    arma::vec fittedy = X*beta;
-    arma::vec pred_err = (y - fittedy) / (1 - hat);
+    arma::mat Q1 = Q.each_col() / sqrt(wj);
+    arma::mat Q2 = Q.each_col() % sqrt(wj);
+    hat.subvec(start(j), end(j)) = sum(Q1%Q2,1);
+    // Find fitted y values
+    fittedy.subvec(start(j), end(j)) = Xj*beta;
   }
-  List listout = List::create(Named("beta")          = beta,
+  // Calculate leave-one-out prediction error
+  pred_err = (y - fittedy) / (1 - hat);
+  List listout = List::create(Named("beta")          = betamat,
                               Named("hatdiag")       = hat,
                               Named("loo_pred_err")  = pred_err,
                               Named("fitted.values") = fittedy);

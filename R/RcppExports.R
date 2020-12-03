@@ -4,12 +4,23 @@
 #' Function that performs linear regression
 #' and saves the diagonal of the hat matrix
 #'
-#' @param X: an nxk data matrix
-#' @param y: The nx1 output vector
-#' @param w: an nx1 vector of weights
+#' @param X an nxk numeric data matrix
+#' @param y The nx1 numeric output vector
+#' @param w an nx1 numeric vector of weights
 #' @export
 fastols <- function(X, y, w) {
     .Call('_looperr_fastols', PACKAGE = 'looperr', X, y, w)
+}
+
+#' Function that performs linear regression
+#' and saves the diagonal of the hat matrix
+#'
+#' @param X an nxk numeric data matrix
+#' @param y The nx1 numeric output vector
+#' @param w an nx1 numeric vector of weights
+#' @param g an nx1 sorted integer vector of groups
+fastols_by <- function(X, y, w, g) {
+    .Call('_looperr_fastols_by', PACKAGE = 'looperr', X, y, w, g)
 }
 
 #' Function that performs local linear regression
