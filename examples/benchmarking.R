@@ -1,5 +1,6 @@
 set.seed(1234)
 bench = list()
+bench_df = list()
 results = data.frame()
 for(n in c(1000, 10000, 100000, 1000000)){
   for(grps in c(5, 50, 100, 200, 500)){
@@ -21,12 +22,13 @@ for(n in c(1000, 10000, 100000, 1000000)){
       },
       cpp_onecore = fastols_by(X,y,w,g,1),
       cpp_twocore = fastols_by(X,y,w,g,2),
-      cpp_threecore = fastols_by(X,y,w,g,3),
-    unit="s")
+      unit="s"
+    )
     print(bench[[paste0(n, "_", grps)]])
   }
-  bench[[paste0(n, "_", grps)]] = cbind(
+  bench_df[[paste0(n, "_", grps)]] = cbind(
     summary(bench[[paste0(n, "_", grps)]]), list(nObs=n, nGroups=grps)
   )
-  results = rbind(results, summary(bench[[1]]))
+  results = rbind(results, bench[[paste0(n, "_", grps)]])
 }
+fwrite(results, file=paste0("data-raw/results_R.csv"))
