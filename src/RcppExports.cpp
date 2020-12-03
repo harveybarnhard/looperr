@@ -20,8 +20,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // fastols_by
-Rcpp::List fastols_by(arma::mat const& X, arma::vec const& y, arma::vec const& w, IntegerVector const& g);
-RcppExport SEXP _looperr_fastols_by(SEXP XSEXP, SEXP ySEXP, SEXP wSEXP, SEXP gSEXP) {
+Rcpp::List fastols_by(arma::mat const& X, arma::vec const& y, arma::vec const& w, IntegerVector const& g, int const nthr);
+RcppExport SEXP _looperr_fastols_by(SEXP XSEXP, SEXP ySEXP, SEXP wSEXP, SEXP gSEXP, SEXP nthrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -29,7 +29,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::vec const& >::type w(wSEXP);
     Rcpp::traits::input_parameter< IntegerVector const& >::type g(gSEXP);
-    rcpp_result_gen = Rcpp::wrap(fastols_by(X, y, w, g));
+    Rcpp::traits::input_parameter< int const >::type nthr(nthrSEXP);
+    rcpp_result_gen = Rcpp::wrap(fastols_by(X, y, w, g, nthr));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -52,7 +53,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_looperr_fastols", (DL_FUNC) &_looperr_fastols, 3},
-    {"_looperr_fastols_by", (DL_FUNC) &_looperr_fastols_by, 4},
+    {"_looperr_fastols_by", (DL_FUNC) &_looperr_fastols_by, 5},
     {"_looperr_loclin", (DL_FUNC) &_looperr_loclin, 6},
     {NULL, NULL, 0}
 };

@@ -19,8 +19,9 @@ fastols <- function(X, y, w) {
 #' @param y The nx1 numeric output vector
 #' @param w an nx1 numeric vector of weights
 #' @param g an nx1 sorted integer vector of groups
-fastols_by <- function(X, y, w, g) {
-    .Call('_looperr_fastols_by', PACKAGE = 'looperr', X, y, w, g)
+#' @param nthr integer; number of threads to use for parallel processing
+fastols_by <- function(X, y, w, g, nthr = 1L) {
+    .Call('_looperr_fastols_by', PACKAGE = 'looperr', X, y, w, g, nthr)
 }
 
 #' Function that performs local linear regression

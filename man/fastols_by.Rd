@@ -5,7 +5,7 @@
 \title{Function that performs linear regression
 and saves the diagonal of the hat matrix}
 \usage{
-fastols_by(X, y, w, g)
+fastols_by(X, y, w, g, nthr = 1L)
 }
 \arguments{
 \item{X}{an nxk numeric data matrix}
@@ -15,6 +15,8 @@ fastols_by(X, y, w, g)
 \item{w}{an nx1 numeric vector of weights}
 
 \item{g}{an nx1 sorted integer vector of groups}
+
+\item{nthr}{integer; number of threads to use for parallel processing}
 }
 \description{
 Function that performs linear regression

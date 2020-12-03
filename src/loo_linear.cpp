@@ -1,6 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
+# include <omp.h>
 using namespace Rcpp;
 using namespace arma;
 
@@ -47,11 +48,13 @@ Rcpp::List fastols(arma::mat const &X, arma::vec const &y, arma::vec const &w) {
 //' @param y The nx1 numeric output vector
 //' @param w an nx1 numeric vector of weights
 //' @param g an nx1 sorted integer vector of groups
+//' @param nthr integer; number of threads to use for parallel processing
 // [[Rcpp::export]]
 Rcpp::List fastols_by(arma::mat const &X,
                    arma::vec const &y,
                    arma::vec const &w,
-                   IntegerVector const &g) {
+                   IntegerVector const &g,
+                   int const nthr = 1) {
   int nrows = X.n_rows;
   arma::vec beta(nrows, arma::fill::zeros),
             hat(nrows, arma::fill::zeros),
@@ -60,6 +63,7 @@ Rcpp::List fastols_by(arma::mat const &X,
             groups(nrows, arma::fill::zeros),
             start(nrows, arma::fill::zeros),
             end(nrows, arma::fill::zeros);
+  omp_set_num_threads(nthr);
   // Find start and endpoints of groupings, assuming g is already sorted
   int cur = g(0);
   int numgrps = 1;
@@ -76,6 +80,7 @@ Rcpp::List fastols_by(arma::mat const &X,
   end   = end.head(numgrps);
   // Initialize matrix to store coefficients and loop over groups
   arma::mat betamat(X.n_cols, numgrps, arma::fill::zeros);
+#pragma omp parallel for
   for(int j=0; j < numgrps; j++){
     // Solve OLS using fast QR decomposition
     arma::mat Xj = X.rows(start(j), end(j));

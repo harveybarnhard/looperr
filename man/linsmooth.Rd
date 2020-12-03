@@ -11,7 +11,8 @@ linsmooth(
   method = "loclin",
   w = NULL,
   kernel = "gauss",
-  H = NULL
+  H = NULL,
+  bygroup = NULL
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ not used for method "loclin", optional for "ols"}
 \item{H}{positive vector; Bandwidth vector that represents diagonal of
 bandwidth matrix used if "loclin" method is used. Defaults
 to a diagonal matrix being optimized by minimizing LOOCV score.}
+
+\item{g}{an nx1 vector of groups.}
 }
 \description{
 This function performs linear smoothing
