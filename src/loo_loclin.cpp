@@ -139,3 +139,67 @@ Rcpp::List loclin(arma::mat const &X,
                               Named("cvscore")       = as_scalar(sum(pow(pred_err,2))));
   return listout;
 }
+
+// -----------------------------------------
+// Function that performs local linear
+// regression for a fixed bandwidth using
+// Gaussian kernel
+// -----------------------------------------
+
+//' Function that performs local linear regression
+//' using Gaussian or Epanechnikov kernel.
+//'
+//' @param X an nxk data matrix
+//' @param H a kxk positive definite bandwidth matrix
+//' @param y The nx1 output vector
+//' @param Xeval an mxp matrix at which to predict using local linear regression
+//' @param sameX binary; Are the evaluation points the same as X? One for yes.
+//' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+//' @param nthr integer; number of threads to use for parallel processing
+// [[Rcpp::export]]
+Rcpp::List loclin_by(arma::mat const &X,
+                  arma::mat const &H,
+                  arma::vec const &y,
+                  arma::mat const &Xeval,
+                  int const &sameX,
+                  int const &kernel,
+                  int const nthr = 1) {
+  int n = X.n_rows, k = X.n_cols, neval = Xeval.n_rows;
+  arma::uvec colind = arma::regspace<arma::uvec>(1,1,k - 1);
+  arma::vec pred_vals(neval, arma::fill::zeros);
+  arma::vec hat(n, arma::fill::zeros);
+  arma::vec pred_err(n, arma::fill::zeros);
+  arma::vec w(n, arma::fill::ones);
+
+  // Perform Cholesky decomposition of H
+  arma::mat cholH = H;
+  if((k > 2) && (kernel==1)) {
+    cholH = arma::chol(H, "lower");
+  }
+  for(int i=0; i < neval; i++){
+    arma::rowvec x0 = Xeval.row(i);
+    // Determine weights using a multivariate Gaussian Kernel
+    if(kernel==1){
+      w = gausskern(X.cols(colind), x0(colind), cholH);
+    }
+    if(kernel==2){
+      w = epankern(X.cols(colind), x0(colind), cholH);
+    }
+    // Solve OLS using economical QR decomposition, scaling X and y by weights
+    arma::mat Q, R;
+    arma::qr_econ(Q, R, X.each_col() % sqrt(w));
+    arma::vec beta = solve(R, (Q.t() * (y%sqrt(w))));
+    pred_vals(i) = arma::as_scalar(x0*beta);
+    // Find diagonal of hat matrix
+    if(sameX==1){
+      hat(i) = hatdiag(Q, w, i);
+    }
+  }
+  if(sameX==1){
+    pred_err = (y - pred_vals) / (1 - hat);
+  }
+  List listout = List::create(Named("fitted.values") = pred_vals,
+                              Named("loo_pred_err")  = pred_err,
+                              Named("cvscore")       = as_scalar(sum(pow(pred_err,2))));
+  return listout;
+}

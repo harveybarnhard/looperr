@@ -18,6 +18,17 @@ fastols <- function(X, y, w) {
 #' @param X an nxk numeric data matrix
 #' @param y The nx1 numeric output vector
 #' @param w an nx1 numeric vector of weights
+#' @export
+fastols2 <- function(X, y, w) {
+    .Call('_looperr_fastols2', PACKAGE = 'looperr', X, y, w)
+}
+
+#' Function that performs linear regression
+#' and saves the diagonal of the hat matrix
+#'
+#' @param X an nxk numeric data matrix
+#' @param y The nx1 numeric output vector
+#' @param w an nx1 numeric vector of weights
 #' @param g an nx1 sorted integer vector of groups
 #' @param nthr integer; number of threads to use for parallel processing
 fastols_by <- function(X, y, w, g, nthr = 1L) {
@@ -35,5 +46,19 @@ fastols_by <- function(X, y, w, g, nthr = 1L) {
 #' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
 loclin <- function(X, H, y, Xeval, sameX, kernel) {
     .Call('_looperr_loclin', PACKAGE = 'looperr', X, H, y, Xeval, sameX, kernel)
+}
+
+#' Function that performs local linear regression
+#' using Gaussian or Epanechnikov kernel.
+#'
+#' @param X an nxk data matrix
+#' @param H a kxk positive definite bandwidth matrix
+#' @param y The nx1 output vector
+#' @param Xeval an mxp matrix at which to predict using local linear regression
+#' @param sameX binary; Are the evaluation points the same as X? One for yes.
+#' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+#' @param nthr integer; number of threads to use for parallel processing
+loclin_by <- function(X, H, y, Xeval, sameX, kernel, nthr = 1L) {
+    .Call('_looperr_loclin_by', PACKAGE = 'looperr', X, H, y, Xeval, sameX, kernel, nthr)
 }
 
