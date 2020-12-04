@@ -26,4 +26,3 @@ test_that("loo_loclin Correct LOO error", {
   loout_looer = y[looind]-loout$fitted.values[looind]
   expect_equal(loout_looer, total_looer)
 })
-

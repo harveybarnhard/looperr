@@ -13,14 +13,16 @@
 #' @param H positive vector; Bandwidth vector that represents diagonal of
 #'     bandwidth matrix used if "loclin" method is used. Defaults
 #'     to a diagonal matrix being optimized by minimizing LOOCV score.
+#' @param g an nx1 vector of groups.
 #' @export
 linsmooth = function(X,
                      y,
-                     Xeval = X,
+                     Xeval=X,
                      method="loclin",
                      w=NULL,
                      kernel="gauss",
-                     H=NULL) {
+                     H=NULL,
+                     bygroup=NULL) {
   if(is.data.frame(X)){
     X = as.matrix(X)
   }
@@ -50,6 +52,11 @@ linsmooth = function(X,
   }else if(method=="ols"){
     if(is.null(w)){
       w = rep(1, length(y))
+    }
+    if(!is.null(bygroup)){
+      ind = order(g)
+      gsorted = as.integer(cumsum(!duplicated(g[ind])))
+      output = fastols_by(X[ind,], y[ind], w[ind], gsorted)
     }
     output = fastols(X, y, w)
   }
