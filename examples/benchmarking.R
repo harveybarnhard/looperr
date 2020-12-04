@@ -1,9 +1,10 @@
+options(scipen=999)
 set.seed(1234)
 bench = list()
 bench_df = list()
 results = data.frame()
 for(n in c(10, 100, 1000, 10000, 100000, 1000000)){
-  for(grps in c(10, 100, 1000, 10000)){
+  for(grps in c(10, 100, 1000, 10000, 100000, 1000000)){
     if(n*grps>10000000){
       next
     }
@@ -20,9 +21,6 @@ for(n in c(10, 100, 1000, 10000, 100000, 1000000)){
     # Benchmark in R
     message("nObs=", n," nGroups=", grps)
     bench[[paste0(n, "_", grps)]] = microbenchmark::microbenchmark(
-      baseR = for(i in 1:grps){
-        lm(y[g==i] ~ X[g==i,2])
-      },
       cpp_onecore = fastols_by(X,y,w,g,1),
       cpp_twocore = fastols_by(X,y,w,g,2),
       unit="s",

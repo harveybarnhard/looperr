@@ -19,7 +19,7 @@ set processors 2
 
 local i = 0
 foreach n in 10 100 1000 10000 100000 1000000 {
-	foreach grps in 10 100 1000 10000 {
+	foreach grps in 10 100 1000 10000 100000 1000000 {
 		if(`n'*`grps'>10000000){
 			continue
 		}
@@ -41,7 +41,7 @@ forval j = 1/`i'{
 }
 local j = 1
 foreach n in 10 100 1000 10000 100000 1000000 {
-	foreach grps in 10 100 1000 10000 {
+	foreach grps in 10 100 1000 10000 100000 1000000 {
 		if(`n'*`grps'>10000000){
 			continue
 		}
