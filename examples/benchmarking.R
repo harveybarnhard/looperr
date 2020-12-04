@@ -23,6 +23,7 @@ for(n in c(10, 100, 1000, 10000, 100000, 1000000)){
     bench[[paste0(n, "_", grps)]] = microbenchmark::microbenchmark(
       cpp_onecore = fastols_by(X,y,w,g,1),
       cpp_twocore = fastols_by(X,y,w,g,2),
+      cpp_threecore = fastols_by(X,y,w,g,3),
       unit="s",
       times=10
     )
