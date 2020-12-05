@@ -7,9 +7,11 @@
 #' @param X an nxk numeric data matrix
 #' @param y The nx1 numeric output vector
 #' @param w an nx1 numeric vector of weights
+#' @param compute_se binary; 1 to compute VCV matrix, 0 otherwise
+#' @param compute_hat binary; 1 to compute diagonal of hat matrix, 0 otherwise
 #' @export
-fastols <- function(X, y, w) {
-    .Call('_looperr_fastols', PACKAGE = 'looperr', X, y, w)
+fastols <- function(X, y, w, compute_se = 1L, compute_hat = 0L) {
+    .Call('_looperr_fastols', PACKAGE = 'looperr', X, y, w, compute_se, compute_hat)
 }
 
 #' Function that performs linear regression
@@ -20,7 +22,7 @@ fastols <- function(X, y, w) {
 #' @param w an nx1 numeric vector of weights
 #' @param g an nx1 sorted integer vector of groups
 #' @param nthr integer; number of threads to use for parallel processing
-fastols_by <- function(X, y, w, g, nthr = 1L, compute_se = 1L, compute_hat = 1L) {
+fastols_by <- function(X, y, w, g, nthr = 1L, compute_se = 1L, compute_hat = 0L) {
     .Call('_looperr_fastols_by', PACKAGE = 'looperr', X, y, w, g, nthr, compute_se, compute_hat)
 }
 

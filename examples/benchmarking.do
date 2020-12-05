@@ -24,6 +24,7 @@ foreach n in 10 100 1000 10000 100000 1000000 {
 			continue
 		}
 		import delimited using "${looperr}/data-raw/benchmark`n'_`grps'", clear
+		sort g
 		Tic, n(`++i')
 		regressby y x, by(g)
 		Toc, n(`i')
