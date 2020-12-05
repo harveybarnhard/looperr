@@ -12,6 +12,7 @@ results[expr=="baseR", expr:="Base R loop with lm()"]
 results[expr=="cpp_onecore", expr:="C++ One Thread"]
 results[expr=="cpp_twocore", expr:="C++ Two Threads"]
 results[expr=="cpp_threecore", expr:="C++ Three Threads"]
+results[expr=="cpp_fourcore", expr:="C++ Four Threads"]
 results[expr=="regressby", expr:="Stata regressby"]
 g = ggplot(results, aes(x=as.character(nObs), y=as.character(nGroups),
                         fill=relative_speed)) +

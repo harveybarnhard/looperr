@@ -18,21 +18,10 @@ fastols <- function(X, y, w) {
 #' @param X an nxk numeric data matrix
 #' @param y The nx1 numeric output vector
 #' @param w an nx1 numeric vector of weights
-#' @export
-fastols2 <- function(X, y, w) {
-    .Call('_looperr_fastols2', PACKAGE = 'looperr', X, y, w)
-}
-
-#' Function that performs linear regression
-#' and saves the diagonal of the hat matrix
-#'
-#' @param X an nxk numeric data matrix
-#' @param y The nx1 numeric output vector
-#' @param w an nx1 numeric vector of weights
 #' @param g an nx1 sorted integer vector of groups
 #' @param nthr integer; number of threads to use for parallel processing
-fastols_by <- function(X, y, w, g, nthr = 1L) {
-    .Call('_looperr_fastols_by', PACKAGE = 'looperr', X, y, w, g, nthr)
+fastols_by <- function(X, y, w, g, nthr = 1L, compute_se = 1L, compute_hat = 1L) {
+    .Call('_looperr_fastols_by', PACKAGE = 'looperr', X, y, w, g, nthr, compute_se, compute_hat)
 }
 
 #' Function that performs local linear regression

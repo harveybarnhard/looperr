@@ -44,8 +44,22 @@ test_that("fastols_by compared to lm", {
   w = rep(1, n)
   g = rep(c(1,2,3,4,5), each=200)
   y = rnorm(1)*X[,2] + rnorm(n, sd=0.5)
-  fastout = fastols_by(X, y, w, g)
+  fastout = fastols_by(X, y, w, g, 1)
   for(i in 1:5){
+    expect_equal(as.vector(fastout$beta[,i]),
+                 as.vector(coefficients(lm(y[g==i] ~ X[g==i,2]))))
+  }
+})
+
+test_that("fastols_by compared to lm: two cores", {
+  n = 1000
+  grps = 1000
+  X = cbind(rep(1, n), rnorm(n*grps))
+  w = rep(1, n*grps)
+  g = rep(1:grps, each=n)
+  y = rnorm(1)*X[,2] + rnorm(n*grps, sd=0.5)
+  fastout = fastols_by(X, y, w, g, 2)
+  for(i in 1:1000){
     expect_equal(as.vector(fastout$beta[,i]),
                  as.vector(coefficients(lm(y[g==i] ~ X[g==i,2]))))
   }
