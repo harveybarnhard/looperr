@@ -1,5 +1,5 @@
 # looperr
-<sup><sub>loo-pair</sub></sup>
+(loo-pair)
 
 An R Package for evaluating leave-one-out (loo) prediction error (perr)
 of linear smoothers.
