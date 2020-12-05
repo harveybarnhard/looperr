@@ -1,4 +1,6 @@
-# looperr <sup>loo-pair</sup>
+# looperr
+<sup><sub>loo-pair</sub></sup>
+
 An R Package for evaluating leave-one-out (loo) prediction error (perr)
 of linear smoothers.
 Methods include linear regression, local polynomial regression
