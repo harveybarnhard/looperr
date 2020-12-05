@@ -44,7 +44,6 @@ Rcpp::List fastols(arma::mat const &X, arma::vec const &y, arma::vec const &w) {
   return listout;
 }
 
-
 // -----------------------------------------
 // Same as fastols above but over groups
 // -----------------------------------------
@@ -58,13 +57,13 @@ Rcpp::List fastols(arma::mat const &X, arma::vec const &y, arma::vec const &w) {
 //' @param g an nx1 sorted integer vector of groups
 //' @param nthr integer; number of threads to use for parallel processing
 // [[Rcpp::export]]
-Rcpp::List fastols_by(arma::mat const &X,
+Rcpp::List fastols_by2(arma::mat const &X,
                       arma::vec const &y,
                       arma::vec const &w,
                       IntegerVector const &g,
                       int const nthr = 1,
                       int const compute_se = 1,
-                      int const compute_hat = 1) {
+                      int const compute_hat = 0) {
   int nrows = X.n_rows, ncols = X.n_cols;
   arma::vec beta(nrows, arma::fill::zeros),
   hat(nrows, arma::fill::zeros),
@@ -105,10 +104,9 @@ Rcpp::List fastols_by(arma::mat const &X,
       Qy(k) = dot(Q.col(k), yw.subvec(start(j), end(j)));
     }
     betamat.col(j) = solve(R, Qy);
-    // Find residuals
-    yw.subvec(start(j), end(j)) = yw.subvec(start(j), end(j)) -
-                                  Xw.rows(start(j), end(j))*betamat.col(j);
-    // Find standard OLS residuals
+    // Find residuals noting that Xbeta = QQ'y
+    yw.subvec(start(j), end(j)) = yw.subvec(start(j), end(j)) - Q*Qy;
+    // Find standard OLS variance
     if(compute_se == 1){
       double sig2 = arma::as_scalar(arma::sum(pow(yw.subvec(start(j), end(j)), 2))/(Q.n_rows - ncols));
       R = inv(R);
