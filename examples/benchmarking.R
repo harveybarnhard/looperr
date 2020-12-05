@@ -15,7 +15,7 @@ for(n in c(10, 100, 1000, 10000, 100000, 1000000)){
     y = rnorm(1)*X[,2] + rnorm(n*grps, sd=0.5)
 
     # Create dataframe and save
-    outdf = data.frame(constant = X[,1], x=X[,2], w=w, g=g, y=y)
+    outdf = data.frame(x=X[,2], w=w, g=g, y=y)
     fwrite(outdf, file=paste0("data-raw/benchmark", n,"_", grps,".csv"))
 
     # Benchmark in R
