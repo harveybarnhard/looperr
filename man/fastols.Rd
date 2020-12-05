@@ -5,7 +5,7 @@
 \title{Function that performs linear regression
 and saves the diagonal of the hat matrix}
 \usage{
-fastols(X, y, w)
+fastols(X, y, w, compute_se = 1L, compute_hat = 0L)
 }
 \arguments{
 \item{X}{an nxk numeric data matrix}
@@ -13,6 +13,10 @@ fastols(X, y, w)
 \item{y}{The nx1 numeric output vector}
 
 \item{w}{an nx1 numeric vector of weights}
+
+\item{compute_se}{binary; 1 to compute VCV matrix, 0 otherwise}
+
+\item{compute_hat}{binary; 1 to compute diagonal of hat matrix, 0 otherwise}
 }
 \description{
 Function that performs linear regression

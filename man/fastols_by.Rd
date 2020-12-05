@@ -5,7 +5,7 @@
 \title{Function that performs linear regression
 and saves the diagonal of the hat matrix}
 \usage{
-fastols_by(X, y, w, g, nthr = 1L)
+fastols_by(X, y, w, g, nthr = 1L, compute_se = 1L, compute_hat = 0L)
 }
 \arguments{
 \item{X}{an nxk numeric data matrix}
