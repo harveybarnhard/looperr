@@ -66,6 +66,24 @@ arma::vec epankern(arma::vec const &x,
   return out;
 }
 
+// ------------------------------------------------
+// Uniform kernel
+// ------------------------------------------------
+arma::vec unifkern(arma::vec const &x,
+                   arma::rowvec const &mean,
+                   arma::mat const &h) {
+  arma::uword const n = x.n_rows;
+  arma::vec out(n, arma::fill::zeros);
+  double hsca = arma::as_scalar(h);
+  arma::vec u = arma::abs((x.each_row() - mean))/hsca;
+  for(arma::uword i = 0; i < n; i++){
+    if(arma::as_scalar(u(i))<1){
+      out(i) = 1/(2*hsca);
+    }
+  }
+  return out;
+}
+
 // -----------------------------------------
 // Function that performs local linear
 // regression for a fixed bandwidth using
@@ -105,6 +123,9 @@ Rcpp::List loclin_diffX(arma::mat const &X,
     }
     if(kernel==2){
       ws = sqrt(epankern(X.cols(colind), x0(colind), cholH));
+    }
+    if(kernel==3){
+      ws = sqrt(unifkern(X.cols(colind), x0(colind), cholH));
     }
     // Solve OLS using economical QR decomposition, scaling X and y by weights
     arma::mat Q, R;
@@ -163,6 +184,9 @@ Rcpp::List loclin_sameX(arma::mat const &X,
     if(kernel==2){
       ws = sqrt(epankern(X.cols(colind), x0(colind), cholH));
     }
+    if(kernel==3){
+      ws = sqrt(unifkern(X.cols(colind), x0(colind), cholH));
+    }
     // Solve OLS using economical QR decomposition, scaling X and y by weights
     arma::mat Q, R;
     arma::qr_econ(Q, R, X.each_col() % ws);
@@ -183,3 +207,69 @@ Rcpp::List loclin_sameX(arma::mat const &X,
                               Named("cvscore")       = arma::dot(pred_err, pred_err));
   return listout;
 }
+
+
+// -----------------------------------------
+// Function that performs local linear
+// regression for a fixed bandwidth using
+// Gaussian kernel
+// -----------------------------------------
+
+//' Function that performs local linear regression
+//' using Gaussian or Epanechnikov kernel.
+//'
+//' @param X an nxk data matrix
+//' @param y The nx1 output vector
+//' @param H a kxk positive definite bandwidth matrix
+//' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+// [[Rcpp::export]]
+Rcpp::List loclin_sameX_by(arma::mat const &X,
+                        arma::vec const &y,
+                        IntegerVector const &g,
+                        arma::mat const &H,
+                        int const &kernel,
+                        int const nthr = 1) {
+  int nrows = X.n_rows, ncols = X.n_cols;
+  arma::uvec colind = arma::regspace<arma::uvec>(1,1,ncols - 1);
+  arma::vec pred_vals(nrows, arma::fill::zeros);
+  arma::vec hat(nrows, arma::fill::zeros);
+  arma::vec pred_err(nrows, arma::fill::zeros);
+  arma::vec ws(nrows, arma::fill::ones);
+  omp_set_num_threads(nthr);
+
+  // Perform Cholesky decomposition of H
+  arma::mat cholH = H;
+  if((ncols > 2) && (kernel==1)) {
+    cholH = arma::chol(H, "lower");
+  }
+#pragma omp parallel for
+  for(int i=0; i < nrows; i++){
+    arma::rowvec x0 = X.row(i);
+    // Determine weights using a multivariate Gaussian Kernel
+    if(kernel==1){
+      ws = sqrt(gausskern(X.cols(colind), x0(colind), cholH));
+    }
+    if(kernel==2){
+      ws = sqrt(epankern(X.cols(colind), x0(colind), cholH));
+    }
+    // Solve OLS using economical QR decomposition, scaling X and y by weights
+    arma::mat Q, R;
+    arma::qr_econ(Q, R, X.each_col() % ws);
+    arma::vec Qy(ncols, arma::fill::none);
+    arma::vec yw = y % ws;
+    for(int k = 0; k < ncols; k++){
+      Qy(k) = dot(Q.col(k), yw);
+    }
+    // Find fitted values and the ith diagonal of hat matrix. Note that
+    // beta does not need to be computed for same X because
+    // yhat = Xbetahat = QQ'y
+    pred_vals(i) = arma::as_scalar((Q.row(i)*Qy)/ws(i));
+    hat(i) = dot(Q.row(i), Q.row(i));
+  }
+  pred_err = (y - pred_vals)/(1-hat);
+  List listout = List::create(Named("fitted.values") = pred_vals,
+                              Named("loo_pred_err")  = pred_err,
+                              Named("cvscore")       = arma::dot(pred_err, pred_err));
+  return listout;
+}
+

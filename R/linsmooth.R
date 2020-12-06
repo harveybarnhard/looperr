@@ -77,7 +77,8 @@ linsmooth = function(X,
 
   # Perform smoothing methods case-by-case =====================================
   if(method=="loclin"){
-    kern = ifelse(kernel=="gauss", 1L, 2L)
+    kern = ifelse(kernel=="gauss", 1L,
+                  ifelse(kernel=="epan", 2L, 3L))
     if(kern!=1L & k>2){
       stop("Multivariate smoothing only allowed for kernal='gauss'")
     }

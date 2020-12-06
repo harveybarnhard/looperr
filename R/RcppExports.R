@@ -33,8 +33,8 @@ fastols_by <- function(X, y, w, g, nthr = 1L, compute_se = 1L, compute_hat = 0L)
 #' @param H a kxk positive definite bandwidth matrix
 #' @param Xeval an mxp matrix at which to predict using local linear regression
 #' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
-loclin_diffX <- function(X, y, H, Xeval, kernel) {
-    .Call('_looperr_loclin_diffX', PACKAGE = 'looperr', X, y, H, Xeval, kernel)
+loclin_diffX <- function(X, y, H, Xeval, kernel, nthr = 1L) {
+    .Call('_looperr_loclin_diffX', PACKAGE = 'looperr', X, y, H, Xeval, kernel, nthr)
 }
 
 #' Function that performs local linear regression
@@ -44,7 +44,18 @@ loclin_diffX <- function(X, y, H, Xeval, kernel) {
 #' @param y The nx1 output vector
 #' @param H a kxk positive definite bandwidth matrix
 #' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
-loclin_sameX <- function(X, y, H, kernel) {
-    .Call('_looperr_loclin_sameX', PACKAGE = 'looperr', X, y, H, kernel)
+loclin_sameX <- function(X, y, H, kernel, nthr = 1L) {
+    .Call('_looperr_loclin_sameX', PACKAGE = 'looperr', X, y, H, kernel, nthr)
+}
+
+#' Function that performs local linear regression
+#' using Gaussian or Epanechnikov kernel.
+#'
+#' @param X an nxk data matrix
+#' @param y The nx1 output vector
+#' @param H a kxk positive definite bandwidth matrix
+#' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+loclin_sameX_by <- function(X, y, g, H, kernel, nthr = 1L) {
+    .Call('_looperr_loclin_sameX_by', PACKAGE = 'looperr', X, y, g, H, kernel, nthr)
 }
 
