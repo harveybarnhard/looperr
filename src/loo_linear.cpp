@@ -29,19 +29,19 @@ Rcpp::List fastols(arma::mat const &X,
   int ncols = X.n_cols, nrows = X.n_rows;
   arma::vec hat(nrows, arma::fill::zeros);
   arma::vec pred_err(nrows, arma::fill::zeros);
-  arma::mat varmat(ncols, ncols, arma::fill::zeros);
+  arma::mat R(ncols, ncols, arma::fill::zeros);
   // Apply weights
   arma::vec ws = sqrt(w);
   arma::vec yw = y % ws;
   // Solve OLS using fast QR decomposition
-  arma::mat Q, R;
+  arma::mat Q;
   arma::qr_econ(Q, R, X.each_col() % ws);
   arma::vec Qy(ncols, arma::fill::none);
   for(int k = 0; k < ncols; k++){
     Qy(k) = dot(Q.col(k), yw);
   }
   arma::vec beta = solve(R, Qy);
-  // Find fitted values noting that Xbeta = QQ'y
+  // Find fitted values noting that yhat = Xbetahat = QQ'y
   arma::vec fittedy = (Q*Qy)/ws;
   // Find residuals
   yw = y - fittedy;
@@ -49,18 +49,18 @@ Rcpp::List fastols(arma::mat const &X,
   if(compute_se == 1){
     double sig2 = arma::as_scalar(arma::dot(w, pow(yw, 2))/(Q.n_rows - ncols));
     R = inv(R);
-    varmat = sig2 * R * R.t();
+    R = sig2 * R * R.t();
   }
   // Find diagonal of hat matrix given the Q of the QR factorization above
   if(compute_hat==1){
-    hat = sum( (Q.each_col() / ws) % (Q.each_col() % ws), 1);
+    hat = sum(Q % Q, 1);
     pred_err = yw / (1 - hat);
   }
   List listout = List::create(Named("beta")          = beta,
                               Named("hatdiag")       = hat,
                               Named("loo_pred_err")  = pred_err,
                               Named("fitted.values") = fittedy,
-                              Named("VCV")           = varmat);
+                              Named("VCV")           = R);
   return listout;
 }
 
@@ -78,12 +78,12 @@ Rcpp::List fastols(arma::mat const &X,
 //' @param nthr integer; number of threads to use for parallel processing
 // [[Rcpp::export]]
 Rcpp::List fastols_by(arma::mat const &X,
-                       arma::vec const &y,
-                       arma::vec const &w,
-                       IntegerVector const &g,
-                       int const nthr = 1,
-                       int const compute_se = 1,
-                       int const compute_hat = 0) {
+                      arma::vec const &y,
+                      arma::vec const &w,
+                      IntegerVector const &g,
+                      int const nthr = 1,
+                      int const compute_se = 1,
+                      int const compute_hat = 0) {
   int nrows = X.n_rows, ncols = X.n_cols;
   arma::vec beta(nrows, arma::fill::zeros),
   hat(nrows, arma::fill::zeros),
@@ -134,17 +134,20 @@ Rcpp::List fastols_by(arma::mat const &X,
     }
     // Find diagonal of hat matrix given the Q of the QR factorization above
     if(compute_hat==1){
-      hat.subvec(startj, endj) = sum( (Q.each_col() / ws.subvec(startj, endj)) %
-        (Q.each_col() % ws.subvec(startj, endj)), 1);
-      pred_err = yw / (1 - hat);
+      hat.subvec(startj, endj) = sum(Q % Q, 1);
     }
   }
   // Scale the unscaled variances with the help of some vectorization
-  arma::vec tmp = w % pow(yw, 2);
-  arma::vec denom = end - start + 1 - ncols;
+  if(compute_se == 1){
+    arma::vec tmp = w % pow(yw, 2);
+    arma::vec denom = end - start + 1 - ncols;
 #pragma omp parallel for
-  for(int j = 0; j < numgrps; j++){
-    varmat.col(j) *= arma::sum(tmp.subvec(start(j), end(j)))/denom(j);
+    for(int j = 0; j < numgrps; j++){
+      varmat.col(j) *= arma::sum(tmp.subvec(start(j), end(j)))/denom(j);
+    }
+  }
+  if(compute_hat == 1){
+      pred_err = yw/(1-hat);
   }
   // Return list of output
   List listout = List::create(Named("beta")          = betamat,
@@ -154,4 +157,3 @@ Rcpp::List fastols_by(arma::mat const &X,
                               Named("variance")      = varmat);
   return listout;
 }
-

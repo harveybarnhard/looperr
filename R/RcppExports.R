@@ -28,28 +28,23 @@ fastols_by <- function(X, y, w, g, nthr = 1L, compute_se = 1L, compute_hat = 0L)
 
 #' Function that performs local linear regression
 #' using Gaussian or Epanechnikov kernel.
-#'
 #' @param X an nxk data matrix
-#' @param H a kxk positive definite bandwidth matrix
 #' @param y The nx1 output vector
+#' @param H a kxk positive definite bandwidth matrix
 #' @param Xeval an mxp matrix at which to predict using local linear regression
-#' @param sameX binary; Are the evaluation points the same as X? One for yes.
 #' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
-loclin <- function(X, H, y, Xeval, sameX, kernel) {
-    .Call('_looperr_loclin', PACKAGE = 'looperr', X, H, y, Xeval, sameX, kernel)
+loclin_diffX <- function(X, y, H, Xeval, kernel) {
+    .Call('_looperr_loclin_diffX', PACKAGE = 'looperr', X, y, H, Xeval, kernel)
 }
 
 #' Function that performs local linear regression
 #' using Gaussian or Epanechnikov kernel.
 #'
 #' @param X an nxk data matrix
-#' @param H a kxk positive definite bandwidth matrix
 #' @param y The nx1 output vector
-#' @param Xeval an mxp matrix at which to predict using local linear regression
-#' @param sameX binary; Are the evaluation points the same as X? One for yes.
+#' @param H a kxk positive definite bandwidth matrix
 #' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
-#' @param nthr integer; number of threads to use for parallel processing
-loclin_by <- function(X, H, y, Xeval, sameX, kernel, nthr = 1L) {
-    .Call('_looperr_loclin_by', PACKAGE = 'looperr', X, H, y, Xeval, sameX, kernel, nthr)
+loclin_sameX <- function(X, y, H, kernel) {
+    .Call('_looperr_loclin_sameX', PACKAGE = 'looperr', X, y, H, kernel)
 }
 

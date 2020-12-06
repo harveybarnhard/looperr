@@ -8,9 +8,9 @@ H = list(matrix(2), matrix(0.1))
 
 # Perform local linear regression with three bandwidth matrices
 predvals = list()
-predvals[[1]] = linsmooth(X, y, H=2)    # Large bandwidth
-predvals[[2]] = linsmooth(X, y, H=0.1)  # Small bandwidth
-predvals[[3]] = linsmooth(X, y)         # Optimal bandwidth
+predvals[[1]] = linsmooth(X, y, method="loclin", H=2)    # Large bandwidth
+predvals[[2]] = linsmooth(X, y, method="loclin", H=0.1)  # Small bandwidth
+predvals[[3]] = linsmooth(X, y, method="loclin")         # Optimal bandwidth
 
 # Perform linear regression
 predvals[[4]] = linsmooth(X, y, method="ols")
@@ -33,8 +33,8 @@ dev.off()
 
 # Smooth the prediction errors
 predvals_meta = list()
-predvals_meta[[3]] = linsmooth(X, predvals[[3]]$loo_pred_err)
-predvals_meta[[4]] = linsmooth(X, predvals[[4]]$loo_pred_err)
+predvals_meta[[3]] = linsmooth(X, predvals[[3]]$loo_pred_err, method="loclin")
+predvals_meta[[4]] = linsmooth(X, predvals[[4]]$loo_pred_err, method="loclin")
 
 # Plot the prediction error points and the fitted curves
 png(filename="examples/looperr_example2.png", width=800, height=480)
@@ -53,7 +53,7 @@ dev.off()
 
 # Smooth the residuals =========================================================
 resid_diff = y-predvals[[3]]$fitted.values - y-predvals[[4]]$fitted.values
-resid_smooth = linsmooth(X, resid_diff)
+resid_smooth = linsmooth(X, resid_diff, method="loclin")
 # Plot the prediction error points and the fitted curves
 png(filename="examples/looperr_example3.png", width=800, height=480)
 plot(x=resid_lin, y=predvals[[4]]$loo_pred_err, col="#CC0000", pch=16, cex=0.9,
@@ -75,7 +75,7 @@ dt = data.table::melt(dt, measure.vars=patterns("^V"), value.name="Z",
 data.table::setnames(dt, old="variable", new="X")
 dt[, X:= as.numeric(substr(X, 2, nchar(X)))]
 dt[, Znoise := Z + rnorm(nrow(dt), mean=0, sd=10)]
-test = linsmooth(cbind(dt$X, dt$Y), dt$Znoise, H=c(1,2))
+test = linsmooth(cbind(dt$X, dt$Y), dt$Znoise, H=c(1,2), method="loclin",)
 dt[, Zsmooth := linsmooth(X, )]
 
 fig = plot_ly(dt, x= ~X, y= ~Y, z= ~Znoise)
