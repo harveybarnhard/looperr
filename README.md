@@ -1,5 +1,6 @@
 # looperr
 An R package for 
+
 **loop**-**err**: Quickly running many regressions by group (loop) while
 simultaneously computing (err)
 
