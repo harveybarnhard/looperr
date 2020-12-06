@@ -1,5 +1,11 @@
 # looperr
-(loo-pair)
+An R package for 
+**loop**-**err**: Quickly running many regressions by group (loop) while
+simultaneously computing (err)
+
+**OR**
+
+**loo**-**perr**: Evaluating leave-one-out (loo) prediction error (perr)
 
 An R Package for evaluating leave-one-out (loo) prediction error (perr)
 of linear smoothers.
@@ -11,6 +17,9 @@ Fast implementation in C++ using stable QR decomposition method.
 ![](examples/looperr_example1.png)
 
 # Theory
+This package uses a bunch of linear algebra "tricks" to reduce
+the number of computations, leading to quicker runtimes
+and better numerical stability.
 
 # Usage
 The main function of this package is `linsmooth()` which
