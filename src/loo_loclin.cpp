@@ -72,6 +72,8 @@ arma::vec epankern(arma::vec const &x,
 // -------------------------------------------------
 double hatdiag(arma::mat const &Q, arma::vec const &w, int const &i) {
   // Rescale Q by weights
+  // Optimize this to only calculate one value rather than al rows
+  // and extracting one
   arma::mat Q1 = Q.each_col() / sqrt(w);
   arma::mat Q2 = Q.each_col() % sqrt(w);
   arma::vec out = sum(Q1%Q2,1);
@@ -160,39 +162,66 @@ Rcpp::List loclin(arma::mat const &X,
 Rcpp::List loclin_by(arma::mat const &X,
                   arma::mat const &H,
                   arma::vec const &y,
+                  IntegerVector const &g,
                   arma::mat const &Xeval,
                   int const &sameX,
                   int const &kernel,
                   int const nthr = 1) {
-  int n = X.n_rows, k = X.n_cols, neval = Xeval.n_rows;
-  arma::uvec colind = arma::regspace<arma::uvec>(1,1,k - 1);
-  arma::vec pred_vals(neval, arma::fill::zeros);
-  arma::vec hat(n, arma::fill::zeros);
-  arma::vec pred_err(n, arma::fill::zeros);
-  arma::vec w(n, arma::fill::ones);
+  int nrows = X.n_rows, ncols = X.n_cols, neval = Xeval.n_rows;
+  arma::uvec colind = arma::regspace<arma::uvec>(1,1,ncols - 1);
+  arma::vec pred_vals(neval, arma::fill::zeros),
+  hat(nrows, arma::fill::zeros),
+  pred_err(nrows, arma::fill::zeros),
+  ws(nrows, arma::fill::ones),
+  start(nrows, arma::fill::zeros),
+  end(nrows, arma::fill::zeros);
+  omp_set_num_threads(nthr);
 
   // Perform Cholesky decomposition of H
   arma::mat cholH = H;
-  if((k > 2) && (kernel==1)) {
+  if((ncols > 2) && (kernel==1)) {
     cholH = arma::chol(H, "lower");
   }
+
+  // Find start and endpoints of group, assuming g is already sorted
+  // Find start and endpoints of group, assuming g is already sorted
+  int cur = g(0);
+  int numgrps = 1;
+  for(int i=0; i < nrows; i++){
+    if(g(i)!=cur){
+      end(numgrps - 1) = i - 1;
+      numgrps += 1;
+      start(numgrps - 1) = i;
+      cur = g(i);
+    }
+  }
+  end(numgrps - 1) = nrows - 1;
+  start = start.head(numgrps);
+  end   = end.head(numgrps);
+#pragma omp parallel for
   for(int i=0; i < neval; i++){
     arma::rowvec x0 = Xeval.row(i);
     // Determine weights using a multivariate Gaussian Kernel
     if(kernel==1){
-      w = gausskern(X.cols(colind), x0(colind), cholH);
+      ws = sqrt(gausskern(X.cols(colind), x0(colind), cholH));
     }
     if(kernel==2){
-      w = epankern(X.cols(colind), x0(colind), cholH);
+      ws = sqrt(epankern(X.cols(colind), x0(colind), cholH));
     }
     // Solve OLS using economical QR decomposition, scaling X and y by weights
     arma::mat Q, R;
-    arma::qr_econ(Q, R, X.each_col() % sqrt(w));
-    arma::vec beta = solve(R, (Q.t() * (y%sqrt(w))));
-    pred_vals(i) = arma::as_scalar(x0*beta);
+    arma::qr_econ(Q, R, X.each_col() % ws);
+    arma::vec Qy(ncols, arma::fill::none);
+    arma::vec yw = y % ws;
+    for(int k = 0; k < nrows; k++){
+      Qy(k) = dot(Q.col(k), yw);
+    }
+    arma::vec beta = solve(R, Qy);
+    // TODO Optimize prediction to only predict ONE value
+    pred_vals(i) = arma::as_scalar(Q*Qy/ws);
     // Find diagonal of hat matrix
     if(sameX==1){
-      hat(i) = hatdiag(Q, w, i);
+      hat(i) = hatdiag(Q, pow(ws,2), i);
     }
   }
   if(sameX==1){

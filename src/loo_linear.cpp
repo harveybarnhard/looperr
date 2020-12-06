@@ -155,3 +155,5 @@ Rcpp::List fastols_by(arma::mat const &X,
   return listout;
 }
 
+
+

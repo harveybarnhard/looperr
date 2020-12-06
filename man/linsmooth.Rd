@@ -7,12 +7,15 @@
 linsmooth(
   X,
   y,
-  Xeval = X,
-  method = "loclin",
+  Xeval = NULL,
+  method = "ols",
   w = NULL,
   kernel = "gauss",
   H = NULL,
-  bygroup = NULL
+  bygroup = NULL,
+  compute_se = TRUE,
+  compute_hat = FALSE,
+  nthreads = 1L
 )
 }
 \arguments{
@@ -24,7 +27,7 @@ linsmooth(
 produced predicted values of y. Defaults to X.}
 
 \item{method}{character; "ols" for linear regression or "loclin" for
-local linear regression}
+local linear regression. Defaults to "ols"}
 
 \item{w}{numeric vector; nx1 observation weights,
 not used for method "loclin", optional for "ols"}
@@ -36,7 +39,17 @@ not used for method "loclin", optional for "ols"}
 bandwidth matrix used if "loclin" method is used. Defaults
 to a diagonal matrix being optimized by minimizing LOOCV score.}
 
-\item{g}{an nx1 vector of groups.}
+\item{compute_se}{logical; If TRUE then OLS procedure will compute standard
+errors. TRUE by default.}
+
+\item{compute_hat}{logical; If TRUE then diagonal of hat matrix (leverage) is
+calculated for each observation. FALSE by default.}
+
+\item{nthreads}{positive integer; Number of threads to use for parallelized
+operations. Defaults to 1 thread.}
+
+\item{g}{an nx1 vector of groups if performing linear smoothing within
+groups.}
 }
 \description{
 This function performs linear smoothing
