@@ -1,3 +1,5 @@
+![](examples/looperr_example1.png)
+
 # looperr
 An R package for quickly performing linear smoothing by group (**loop**) while
 simultaneously computing prediction error (**err**). Or maybe an R package
@@ -9,8 +11,6 @@ Smoothing methods include:
 * local polynomial regression with Gaussian or Epanechnikov kernel.
 
 Fast implementation in C++ using stable QR decomposition method.
-
-![](examples/looperr_example1.png)
 
 # Theory
 This package uses a bunch of linear algebra "tricks" to reduce
