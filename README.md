@@ -1,19 +1,15 @@
 # looperr
-An R package for 
-
-**loop**-**err**: Quickly performing linear smoothing by group (loop) while
-simultaneously computing (err)
-
-**OR**
-
-**loo**-**perr**: Evaluating leave-one-out (loo) prediction error (perr)
+An R package for quickly performing linear smoothing by group (loop) while
+simultaneously computing prediction error (err)
 
 Smoothing methods include linear regression, weighted linear regression,
 and local polynomial regression with Gaussian or Epanechnikov kernel.
 
 Fast implementation in C++ using stable QR decomposition method.
 
+<center>
 ![](examples/looperr_example1.png)
+</center>
 
 # Theory
 This package uses a bunch of linear algebra "tricks" to reduce
