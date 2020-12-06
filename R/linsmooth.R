@@ -83,14 +83,18 @@ linsmooth = function(X,
     }
     if(is.null(H)){
       if(ncol(X)==2){
-        H = optim(1, function(h) loclin(X, matrix(h), y, X, sameX=1, kernel=kern)[["cvscore"]],
+        H = optim(1, function(h) loclin_sameX(X, y, matrix(h), kernel=kern)[["cvscore"]],
                      lower=0, upper=max(X[,2])-min(X[,2]), method="Brent", control=list(maxit=8))$par
       }else{
-        H = optim(1, function(h) loclin(X,diag(h, k-1, k-1), y, X, sameX=1, kernel=kern)[["cvscore"]],
+        H = optim(1, function(h) loclin_sameX(X, y, diag(h, k-1, k-1), kernel=kern)[["cvscore"]],
                      method="Nelder-Mead", control=list(maxit=10))$par
       }
     }
-    output = loclin(X, diag(H, k-1, k-1), y, Xeval, 1, kern)
+    if(is.null(Xeval)){
+      output = loclin_sameX(X, y, diag(H, k-1, k-1), kern)
+    }else {
+      output = loclin_sameX(X, y, diag(H, k-1, k-1), Xeval, kern)
+    }
     output["bandwidth"] = H
     return(output)
   }else if(method=="ols"){
