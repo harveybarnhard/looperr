@@ -1,5 +1,3 @@
-![](examples/looperr_example1.png)
-
 # looperr
 An R package for quickly performing linear smoothing by group (**loop**) while
 simultaneously computing prediction error (**err**). Or maybe an R package
@@ -10,16 +8,9 @@ Smoothing methods include:
 * Weighted linear regression
 * local polynomial regression with Gaussian or Epanechnikov kernel.
 
-Fast implementation in C++ using stable QR decomposition method.
+Fast implementation in C++ using OpenMP and stable QR methods. 
 
-# Theory
-This package uses a bunch of linear algebra "tricks" to reduce
-the number of computations, leading to quicker runtimes
-and better numerical stability. For proofs and explanations,
-see my
-[blog post](https://harveybarnhard.com/posts/evaluating-prediction-error.html)
-on this package. The blog post is currently incomplete, and
-more proofs will be added later.
+![](examples/looperr_example1.png)
 
 # Usage
 The main function of this package is `linsmooth()` which
@@ -44,6 +35,15 @@ linsmooth(X, y, method="loclin", kernel="epan")
 # Local linear regression with Epanechnikov kernel and bandwidth H=1
 linsmooth(X, y, method="loclin", H=1)
 ```
+
+# Theory
+This package uses a bunch of linear algebra "tricks" to reduce
+the number of computations, leading to quicker runtimes
+and better numerical stability. For proofs and explanations,
+see my
+[blog post](https://harveybarnhard.com/posts/evaluating-prediction-error.html)
+on this package. The blog post is currently incomplete, and
+more proofs will be added later.
 
 # Setup and Installation
 
