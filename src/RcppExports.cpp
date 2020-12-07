@@ -69,8 +69,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// loclin_sameX2
+Rcpp::List loclin_sameX2(arma::mat const& X, arma::vec const& y, double const& H, int const& kernel);
+RcppExport SEXP _looperr_loclin_sameX2(SEXP XSEXP, SEXP ySEXP, SEXP HSEXP, SEXP kernelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat const& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double const& >::type H(HSEXP);
+    Rcpp::traits::input_parameter< int const& >::type kernel(kernelSEXP);
+    rcpp_result_gen = Rcpp::wrap(loclin_sameX2(X, y, H, kernel));
+    return rcpp_result_gen;
+END_RCPP
+}
 // loclin_sameX_by
-Rcpp::List loclin_sameX_by(arma::mat const& X, arma::vec const& y, IntegerVector const& g, arma::mat const& H, int const& kernel, int const nthr);
+Rcpp::List loclin_sameX_by(arma::mat const& X, arma::vec const& y, IntegerVector const& g, double const& H, int const& kernel, int const nthr);
 RcppExport SEXP _looperr_loclin_sameX_by(SEXP XSEXP, SEXP ySEXP, SEXP gSEXP, SEXP HSEXP, SEXP kernelSEXP, SEXP nthrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -78,7 +92,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat const& >::type X(XSEXP);
     Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
     Rcpp::traits::input_parameter< IntegerVector const& >::type g(gSEXP);
-    Rcpp::traits::input_parameter< arma::mat const& >::type H(HSEXP);
+    Rcpp::traits::input_parameter< double const& >::type H(HSEXP);
     Rcpp::traits::input_parameter< int const& >::type kernel(kernelSEXP);
     Rcpp::traits::input_parameter< int const >::type nthr(nthrSEXP);
     rcpp_result_gen = Rcpp::wrap(loclin_sameX_by(X, y, g, H, kernel, nthr));
@@ -91,6 +105,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_looperr_fastols_by", (DL_FUNC) &_looperr_fastols_by, 7},
     {"_looperr_loclin_diffX", (DL_FUNC) &_looperr_loclin_diffX, 6},
     {"_looperr_loclin_sameX", (DL_FUNC) &_looperr_loclin_sameX, 5},
+    {"_looperr_loclin_sameX2", (DL_FUNC) &_looperr_loclin_sameX2, 4},
     {"_looperr_loclin_sameX_by", (DL_FUNC) &_looperr_loclin_sameX_by, 6},
     {NULL, NULL, 0}
 };
