@@ -322,15 +322,13 @@ Rcpp::List loclin_sameX_by(arma::mat const &X,
   start = start.head(numgrps + 1);
   // Loop over groups
   for(int j=0; j < numgrps; j++){
-    Rcout << "Iteration " << std::endl << j + 1 << std::endl;
     // Start and endpoints of group
     int startj = start(j), endj = start(j + 1) - 1;
     // Start and endpoints for compact kernel
     int jfirst = startj, jlast=startj;
-    Rcout << "startj, endj " << std::endl << startj << ", " << endj << std::endl;
     for(int i = startj; i <= endj; i++){
       // First find the new lower bound of kernel support
-      while(jfirst < endj - 1){
+      while(jfirst < endj){
         double test = arma::as_scalar(X(i,1) - X(jfirst,1));
         if(test < H){
           break;
@@ -338,7 +336,7 @@ Rcpp::List loclin_sameX_by(arma::mat const &X,
         jfirst++;
       }
       // Find the new upper bound of kernel support
-      while(jlast < endj - 1){
+      while(jlast < endj){
         double test = arma::as_scalar(X(jlast, 1) - X(i,1));
         if(test > H){
           jlast--;
@@ -352,6 +350,7 @@ Rcpp::List loclin_sameX_by(arma::mat const &X,
         hat(i) = 1;
         continue;
       }
+      //Rcout << "startj, endj " << std::endl << jfirst << ", " << jlast << std::endl;
       // Find weights, initializing as uniform weights
       arma::vec u = arma::abs(X.submat(jfirst, 1, jlast, 1) - X(i,1));
       arma::vec ws(u.size(), arma::fill::ones);
