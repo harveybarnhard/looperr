@@ -114,7 +114,7 @@ Rcpp::List fastols_by(arma::mat const &X,
   // Initialize matrix to store coefficients and loop over groups
   arma::mat betamat(ncols, numgrps, arma::fill::none);
   arma::mat varmat(ncols, numgrps, arma::fill::zeros);
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic, nthr)
   for(int j=0; j < numgrps; j++){
     int startj = start(j), endj = end(j);
     // Solve OLS using fast QR decomposition
@@ -141,7 +141,7 @@ Rcpp::List fastols_by(arma::mat const &X,
   if(compute_se == 1){
     arma::vec tmp = w % pow(yw, 2);
     arma::vec denom = end - start + 1 - ncols;
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic, nthr)
     for(int j = 0; j < numgrps; j++){
       varmat.col(j) *= arma::sum(tmp.subvec(start(j), end(j)))/denom(j);
     }
@@ -157,3 +157,4 @@ Rcpp::List fastols_by(arma::mat const &X,
                               Named("variance")      = varmat);
   return listout;
 }
+
