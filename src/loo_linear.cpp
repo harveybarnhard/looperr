@@ -76,6 +76,9 @@ Rcpp::List fastols(arma::mat const &X,
 //' @param w an nx1 numeric vector of weights
 //' @param g an nx1 sorted integer vector of groups
 //' @param nthr integer; number of threads to use for parallel processing
+//' @param compute_se binary; 1 if se should be computed, 0 if not. 1 by default
+//' @param compute_hat binary; 1 if diagonal of at matrix should be calculated,
+//'     0 if not. 0 by default.
 // [[Rcpp::export]]
 Rcpp::List fastols_by(arma::mat const &X,
                       arma::vec const &y,
@@ -88,9 +91,7 @@ Rcpp::List fastols_by(arma::mat const &X,
   arma::vec beta(nrows, arma::fill::zeros),
   hat(nrows, arma::fill::zeros),
   pred_err(nrows, arma::fill::zeros),
-  groups(nrows, arma::fill::zeros),
-  start(nrows, arma::fill::zeros),
-  end(nrows, arma::fill::zeros);
+  start(nrows, arma::fill::zeros);
   omp_set_num_threads(nthr);
   // Weight
   arma::vec ws = sqrt(w);
@@ -100,23 +101,21 @@ Rcpp::List fastols_by(arma::mat const &X,
   // Find start and endpoints of group, assuming g is already sorted
   int cur = g(0);
   int numgrps = 1;
-  for(int i=0; i < nrows; i++){
+  for(int i=1; i < nrows; i++){
     if(g(i)!=cur){
-      end(numgrps - 1) = i - 1;
+      start(numgrps) = i;
       numgrps += 1;
-      start(numgrps - 1) = i;
       cur = g(i);
     }
   }
-  end(numgrps - 1) = nrows - 1;
-  start = start.head(numgrps);
-  end   = end.head(numgrps);
+  start(numgrps) = nrows;
+  start = start.head(numgrps + 1);
   // Initialize matrix to store coefficients and loop over groups
   arma::mat betamat(ncols, numgrps, arma::fill::none);
   arma::mat varmat(ncols, numgrps, arma::fill::zeros);
 #pragma omp parallel for
   for(int j=0; j < numgrps; j++){
-    int startj = start(j), endj = end(j);
+    int startj = start(j), endj = start(j + 1) - 1;
     // Solve OLS using fast QR decomposition
     arma::mat Q, R;
     arma::qr_econ(Q, R, Xw.rows(startj, endj));
@@ -137,17 +136,18 @@ Rcpp::List fastols_by(arma::mat const &X,
       hat.subvec(startj, endj) = sum(Q % Q, 1);
     }
   }
-  // Scale the unscaled variances with the help of some vectorization
+  // Scale the unscaled variances using common error variances with bias
+  // correction term
   if(compute_se == 1){
     arma::vec tmp = w % pow(yw, 2);
-    arma::vec denom = end - start + 1 - ncols;
+    arma::vec denom = arma::shift(start, -1) - start - ncols;
 #pragma omp parallel for
     for(int j = 0; j < numgrps; j++){
-      varmat.col(j) *= arma::sum(tmp.subvec(start(j), end(j)))/denom(j);
+      varmat.col(j) *= arma::sum(tmp.subvec(start(j), start(j + 1) - 1))/denom(j);
     }
   }
   if(compute_hat == 1){
-      pred_err = yw/(1-hat);
+    pred_err = yw/(1-hat);
   }
   // Return list of output
   List listout = List::create(Named("beta")          = betamat,
