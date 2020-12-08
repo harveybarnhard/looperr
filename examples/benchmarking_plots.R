@@ -37,4 +37,5 @@ g = ggplot(results, aes(x=as.character(nObs), y=as.character(nGroups),
         panel.grid.minor = element_blank()) +
   labs(x="Number of Observations Per Group",
        y="Number of Groups")
-ggsave("examples/benchmark_regressby.svg", plot=g)
+ggsave("examples/benchmark_regressby.svg",
+       plot=g, width=10, height=6, units="in")
