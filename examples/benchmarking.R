@@ -1,3 +1,5 @@
+library(data.table)
+library(looperr)
 options(scipen=999)
 set.seed(1234)
 bench = list()
@@ -21,9 +23,9 @@ for(n in c(10, 100, 1000, 10000, 100000, 1000000)){
     # Benchmark in R
     message("nObs=", n," nGroups=", grps)
     bench[[paste0(n, "_", grps)]] = microbenchmark::microbenchmark(
-      cpp_onecore = fastols_by(X,y,w,g,nthr=1L, compute_hat=0L),
-      cpp_twocore = fastols_by(X,y,w,g,nthr=2L, compute_hat=0L),
-      cpp_fourcore = fastols_by(X,y,w,g,nthr=4L, compute_hat=0L),
+      cpp_onecore = fastols_by(X,y,g,nthr=1L, compute_hat=0L),
+      cpp_twocore = fastols_by(X,y,g,nthr=2L, compute_hat=0L),
+      cpp_fourcore = fastols_by(X,y,g,nthr=4L, compute_hat=0L),
       unit="s",
       times=10
     )
