@@ -78,7 +78,7 @@ arma::vec unifkern(arma::vec const &x,
   arma::vec u = arma::abs((x.each_row() - mean))/hsca;
   for(arma::uword i = 0; i < n; i++){
     if(arma::as_scalar(u(i))<1){
-      out(i) = 1/(2*hsca);
+      out(i) = 1;
     }
   }
   return out;
@@ -210,8 +210,7 @@ Rcpp::List loclin_sameX(arma::mat const &X,
 
 // -----------------------------------------
 // Function that performs local linear
-// regression for a fixed bandwidth using
-// Gaussian kernel
+// regression using uniform kernel
 // -----------------------------------------
 //' Function that performs local linear regression
 //' using Gaussian or Epanechnikov kernel.
@@ -221,10 +220,9 @@ Rcpp::List loclin_sameX(arma::mat const &X,
 //' @param H a kxk positive definite bandwidth matrix
 //' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
 // [[Rcpp::export]]
-Rcpp::List loclin_sameX2(arma::mat const &X,
-                         arma::vec const &y,
-                         double const &H,
-                         int const &kernel) {
+Rcpp::List loclin_sameX_unif(arma::mat const &X,
+                             arma::vec const &y,
+                             double const &H) {
   int nrows = X.n_rows, ncols = X.n_cols;
   arma::vec pred_vals(nrows, arma::fill::zeros);
   arma::vec hat(nrows, arma::fill::zeros);
@@ -234,16 +232,14 @@ Rcpp::List loclin_sameX2(arma::mat const &X,
   for(int i=0; i < nrows; i++){
     // First find the new lower bound of kernel support
     while(jfirst < nrows - 1){
-      double test = arma::as_scalar(X(i,1) - X(jfirst,1));
-      if(test < H){
+      if(arma::as_scalar(X(i,1) - X(jfirst,1)) < H){
         break;
       }
       jfirst++;
     }
     // Find the new upper bound of kernel support
     while(jlast < nrows - 1){
-      double test = arma::as_scalar(X(jlast, 1) - X(i,1));
-      if(test > H){
+      if(arma::as_scalar(X(jlast, 1) - X(i,1)) > H){
         jlast--;
         break;
       }
@@ -255,16 +251,10 @@ Rcpp::List loclin_sameX2(arma::mat const &X,
       hat(i) = 1;
       continue;
     }
-    arma::vec u = arma::abs(X.submat(jfirst, 1, jlast, 1) - X(i,1));
-    arma::vec ws(u.size(), arma::fill::ones);
-    if(kernel==2){
-      ws = sqrt(3*(1-pow(u/H, 2))/4);
-    }
-    arma::mat Xw = X.rows(jfirst, jlast);
     arma::mat Q, R;
-    arma::qr_econ(Q, R, Xw.each_col() % ws);
+    arma::qr_econ(Q, R, X.rows(jfirst, jlast));
     arma::vec Qy(ncols, arma::fill::none);
-    arma::vec yw = y.subvec(jfirst, jlast) % ws;
+    arma::vec yw = y.subvec(jfirst, jlast);
     for(int k = 0; k < ncols; k++){
       Qy(k) = dot(Q.col(k), yw);
     }
@@ -272,12 +262,99 @@ Rcpp::List loclin_sameX2(arma::mat const &X,
     // beta does not need to be computed for same X because
     // yhat = Xbetahat = QQ'y
     int selfind = i - jfirst;
-    pred_vals(i) = arma::as_scalar((Q.row(selfind)*Qy)/ws(selfind));
+    pred_vals(i) = arma::as_scalar(Q.row(selfind)*Qy);
     hat(i) = dot(Q.row(selfind), Q.row(selfind));
   }
-  arma::vec pred_err = (y - pred_vals)/(1-hat);
   List listout = List::create(Named("fitted.values") = pred_vals,
-                              Named("loo_pred_err") = pred_err,
+                              Named("loo_pred_err") =(y - pred_vals)/(1-hat),
+                              Named("cvscore"));
+  return listout;
+}
+
+// -----------------------------------------
+// Function that performs local linear
+// regression over groups using a uniform
+// kernel
+// -----------------------------------------
+//' Function that performs local linear regression
+//' using Gaussian or Epanechnikov kernel.
+//'
+//' @param X an nxk data matrix
+//' @param y The nx1 output vector
+//' @param g nx1 integer vector
+//' @param H a kxk positive definite bandwidth matrix
+//' @param nthr positive integer; number of threads
+// [[Rcpp::export]]
+Rcpp::List loclin_sameX_unif_by(arma::mat const &X,
+                                arma::vec const &y,
+                                IntegerVector const &g,
+                                double const &H,
+                                int const nthr = 1) {
+  // Initialize objects
+  int nrows = X.n_rows, ncols = X.n_cols;
+  arma::vec pred_vals(nrows, arma::fill::zeros);
+  arma::vec hat(nrows, arma::fill::zeros);
+  arma::vec start(nrows, arma::fill::zeros);
+  omp_set_num_threads(nthr);
+
+  // Find start and endpoints of group, assuming g is already sorted
+  int cur = g(0);
+  int numgrps = 1;
+  for(int i=1; i < nrows; i++){
+    if(g(i)!=cur){
+      start(numgrps) = i;
+      numgrps += 1;
+      cur = g(i);
+    }
+  }
+  start(numgrps) = nrows;
+  start = start.head(numgrps + 1);
+  // Loop over groups
+#pragma omp parallel for
+  for(int j=0; j < numgrps; j++){
+    // Start and endpoints of group
+    int startj = start(j), endj = start(j + 1) - 1;
+    // Lower and upper bounds of support for compact kernel
+    int jfirst = startj, jlast=startj;
+    for(int i = startj; i <= endj; i++){
+      // Find the new lower bound of kernel support
+      while(jfirst < endj){
+        if(arma::as_scalar(X(i,1) - X(jfirst,1)) < H){
+          break;
+        }
+        jfirst++;
+      }
+      // Find the new upper bound of kernel support
+      while(jlast < endj){
+        if(arma::as_scalar(X(jlast, 1) - X(i,1)) > H){
+          jlast--;
+          break;
+        }
+        jlast++;
+      }
+      // If the kernel only contains the point itself, then use datapoint itself
+      if(jfirst==jlast){
+        pred_vals(i) = y(i);
+        hat(i) = 1;
+        continue;
+      }
+      arma::mat Q, R;
+      arma::qr_econ(Q, R, X.rows(jfirst, jlast));
+      arma::vec Qy(ncols, arma::fill::none);
+      arma::vec yw = y.subvec(jfirst, jlast);
+      for(int k = 0; k < ncols; k++){
+        Qy(k) = dot(Q.col(k), yw);
+      }
+      // Find fitted values and the ith diagonal of hat matrix. Note that
+      // beta does not need to be computed for same X because
+      // yhat = Xbetahat = QQ'y
+      int selfind = i - jfirst;
+      pred_vals(i) = arma::as_scalar(Q.row(selfind)*Qy);
+      hat(i) = dot(Q.row(selfind), Q.row(selfind));
+    }
+  }
+  List listout = List::create(Named("fitted.values") = pred_vals,
+                              Named("loo_pred_err") = (y - pred_vals)/(1-hat),
                               Named("cvscore"));
   return listout;
 }
@@ -285,22 +362,21 @@ Rcpp::List loclin_sameX2(arma::mat const &X,
 // -----------------------------------------
 // Function that performs local linear
 // regression for a fixed bandwidth using
-// Gaussian kernel
+// epanechnikov kernel
 // -----------------------------------------
+/*
 //' Function that performs local linear regression
-//' using Gaussian or Epanechnikov kernel.
+//' using Epanechnikov or uniform kernel
 //'
 //' @param X an nxk data matrix
 //' @param y The nx1 output vector
 //' @param H a kxk positive definite bandwidth matrix
-//' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
 // [[Rcpp::export]]
 Rcpp::List loclin_sameX_by(arma::mat const &X,
-                         arma::vec const &y,
-                         IntegerVector const &g,
-                         double const &H,
-                         int const &kernel,
-                         int const nthr = 1) {
+                           arma::vec const &y,
+                           IntegerVector const &g,
+                           double const &H,
+                           int const nthr = 1) {
   // Initialize objects
   int nrows = X.n_rows, ncols = X.n_cols;
   arma::vec pred_vals(nrows, arma::fill::zeros);
@@ -324,8 +400,10 @@ Rcpp::List loclin_sameX_by(arma::mat const &X,
   for(int j=0; j < numgrps; j++){
     // Start and endpoints of group
     int startj = start(j), endj = start(j + 1) - 1;
-    // Start and endpoints for compact kernel
+    // Lower and upper bounds of support for compact kernel
     int jfirst = startj, jlast=startj;
+    // Difference that will be updated each iteration
+    arma::vec u(endj - startj + 1, arma::fill::zeros);
     for(int i = startj; i <= endj; i++){
       // First find the new lower bound of kernel support
       while(jfirst < endj){
@@ -337,8 +415,8 @@ Rcpp::List loclin_sameX_by(arma::mat const &X,
       }
       // Find the new upper bound of kernel support
       while(jlast < endj){
-        double test = arma::as_scalar(X(jlast, 1) - X(i,1));
-        if(test > H){
+        u(jlast - startj) = arma::as_scalar(X(jlast, 1) - X(i,1));
+        if(u(jlast - startj) > H){
           jlast--;
           break;
         }
@@ -350,14 +428,9 @@ Rcpp::List loclin_sameX_by(arma::mat const &X,
         hat(i) = 1;
         continue;
       }
-      //Rcout << "startj, endj " << std::endl << jfirst << ", " << jlast << std::endl;
       // Find weights, initializing as uniform weights
-      arma::vec u = arma::abs(X.submat(jfirst, 1, jlast, 1) - X(i,1));
-      arma::vec ws(u.size(), arma::fill::ones);
-      if(kernel==2){
-        ws = sqrt(3*(1-pow(u/H, 2))/4);
-      }
       arma::mat Xw = X.rows(jfirst, jlast);
+      arma::vec ws = sqrt(3*(1-pow(u/H, 2))/4);
       arma::mat Q, R;
       arma::qr_econ(Q, R, Xw.each_col() % ws);
       arma::vec Qy(ncols, arma::fill::none);
@@ -379,3 +452,4 @@ Rcpp::List loclin_sameX_by(arma::mat const &X,
                               Named("cvscore"));
   return listout;
 }
+*/
