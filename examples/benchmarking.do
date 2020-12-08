@@ -15,7 +15,7 @@ program define Toc
 	timer off `n'
 end
 
-set processors 2
+set processors 4
 
 local i = 0
 foreach n in 10 100 1000 10000 100000 1000000 {
