@@ -37,6 +37,3 @@ for(n in c(10, 100, 1000, 10000, 100000, 1000000)){
 results = results[, c("expr","median", "nObs", "nGroups")]
 colnames(results) = c("expr", "seconds", "nObs", "nGroups")
 fwrite(results, file="data-raw/results_R.csv")
-
-
-X = X[order(X[,2]),]
