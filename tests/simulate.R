@@ -9,4 +9,5 @@ X = X[ord,]
 g = g[ord]
 y = y[ord]
 
+microbenchmark::microbenchmark(crossprod(X,X))
 microbenchmark(fastols_by(X,y,g, nthr=8), loclin_sameX_byunif(X,y,g, 1, nthr=8), times=10)

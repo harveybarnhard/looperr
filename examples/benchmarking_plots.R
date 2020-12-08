@@ -26,8 +26,8 @@ g = ggplot(results, aes(x=as.character(nObs), y=as.character(nGroups),
                         fill=relative_speed)) +
   geom_tile(color="black") +
   geom_text(aes(label=round(relative_speed,2)),fontface = "bold") +
-  scale_fill_gradientn(colours=c("white", "yellow", "orange","red"),
-                       values=rescale(c(1,5,18,200), from=c(min(results$relative_speed), max(results$relative_speed)))) +
+  scale_fill_gradientn(colours=c("white", "yellow", "orange","red","red"),
+                       values=rescale(c(1,12,19,80,210), from=c(min(results$relative_speed), max(results$relative_speed)))) +
   facet_wrap(~expr) +
   theme_minimal() +
   theme(legend.position="none",

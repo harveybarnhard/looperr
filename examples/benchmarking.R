@@ -27,7 +27,7 @@ for(n in c(10, 100, 1000, 10000, 100000, 1000000)){
       cpp_twocore = fastols_by(X,y,g,nthr=2L, compute_hat=0L),
       cpp_fourcore = fastols_by(X,y,g,nthr=4L, compute_hat=0L),
       unit="s",
-      times=10
+      times=20
     )
     print(bench[[paste0(n, "_", grps)]])
     bench_df[[paste0(n, "_", grps)]] = cbind(
