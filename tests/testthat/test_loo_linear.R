@@ -54,7 +54,7 @@ test_that("fastols_by compared to lm", {
   w = rep(1, n)
   g = rep(c(1,2,3,4,5), each=200)
   y = rnorm(1)*X[,2] + rnorm(n, sd=0.5)
-  fastout = fastols_by(X, y, w, g, 1, compute_se=1, compute_hat=1)
+  fastout = fastols_by(X, y, g, 1, compute_se=1, compute_hat=1)
   for(i in 1:5){
     Xj = X[g==i,]
     H = Xj%*%solve(crossprod(Xj, Xj))%*%t(Xj)
@@ -82,7 +82,7 @@ test_that("fastols_by compared to lm: two cores", {
   w = rep(1, n*grps)
   g = rep(1:grps, each=n)
   y = rnorm(1)*X[,2] + rnorm(n*grps, sd=0.5)
-  fastout = fastols_by(X, y, w, g, 2, compute_se=1, compute_hat=1)
+  fastout = fastols_by(X, y, g, 2, compute_se=1, compute_hat=1)
   for(i in sample(1:1000, 10)){
     Xj = X[g==i,]
     H = Xj%*%solve(crossprod(Xj, Xj))%*%t(Xj)
@@ -110,7 +110,7 @@ test_that("fastols_by compared to lm: two cores + more vars", {
   w = rep(1, n*grps)
   g = rep(1:grps, each=n)
   y = rnorm(1)*X[,2] + rnorm(1)*X[,3] + rnorm(n*grps, sd=0.5)
-  fastout = fastols_by(X, y, w, g, 2, compute_se=1, compute_hat=1)
+  fastout = fastols_by(X, y, g, 2, compute_se=1, compute_hat=1)
   for(i in sample(1:1000, 10)){
     Xj = X[g==i,]
     H = Xj%*%solve(crossprod(Xj, Xj))%*%t(Xj)
@@ -138,7 +138,7 @@ test_that("fastols_by compared to lm: two cores + weights", {
   w = runif(n*grps, 0, 1)
   g = rep(1:grps, each=n)
   y = rnorm(1)*X[,2] + rnorm(n*grps, sd=0.5)
-  fastout = fastols_by(X, y, w, g, 2, compute_se=1, compute_hat=1)
+  fastout = fastols_bywt(X, y, w, g, 2, compute_se=1, compute_hat=1)
   for(i in sample(1:1000, 10)){
     Xj = X[g==i,]
     Wj = diag(w[g==i])
