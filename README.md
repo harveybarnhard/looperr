@@ -1,4 +1,3 @@
-:warning: This package is still under development, please report any and all problems as GitHub issues!
 # looperr
 :warning: This package is still under development, please report any and all problems as GitHub issues!
 <!-- badges: start -->
