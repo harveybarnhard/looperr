@@ -1,6 +1,9 @@
 :warning: This package is still under development, please report any and all problems as GitHub issues!
 # looperr
-<img src="https://www.r-pkg.org/badges/version/looperr" alt="looperr CRAN badge">
+<!-- badges: start -->
+  [![R build status](https://github.com/harveybarnhard/looperr/workflows/R-CMD-check/badge.svg)](https://github.com/harveybarnhard/looperr/actions)
+  <img src="https://www.r-pkg.org/badges/version/looperr" alt="looperr CRAN badge">
+<!-- badges: end -->
 
 An R package for quickly performing **l**inear sm**oo**thing by grou**p** (**loop**) while
 simultaneously computing prediction error (**err**). Or maybe an R package
