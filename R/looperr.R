@@ -1,4 +1,4 @@
-#' @useDynLib looperr
+#' @useDynLib looperr, .registration = TRUE
 #' @importFrom Rcpp evalCpp
 #' @import RcppArmadillo
 #' @exportPattern "^[[:alpha:]]+"

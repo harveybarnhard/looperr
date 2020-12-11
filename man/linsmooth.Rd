@@ -39,6 +39,9 @@ not used for method "loclin", optional for "ols"}
 bandwidth matrix used if "loclin" method is used. Defaults
 to a diagonal matrix being optimized by minimizing LOOCV score.}
 
+\item{bygroup}{an nx1 vector of groups if performing linear smoothing within
+groups.}
+
 \item{compute_se}{logical; If TRUE then OLS procedure will compute standard
 errors. TRUE by default.}
 
@@ -47,9 +50,6 @@ calculated for each observation. FALSE by default.}
 
 \item{nthreads}{positive integer; Number of threads to use for parallelized
 operations. Defaults to 1 thread.}
-
-\item{g}{an nx1 vector of groups if performing linear smoothing within
-groups.}
 }
 \description{
 This function performs linear smoothing

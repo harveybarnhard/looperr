@@ -97,6 +97,7 @@ arma::vec unifkern(arma::vec const &x,
 //' @param H a kxk positive definite bandwidth matrix
 //' @param Xeval an mxp matrix at which to predict using local linear regression
 //' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+//' @param nthr positive integer; number of threads
 // [[Rcpp::export]]
 Rcpp::List loclin_diffX(arma::mat const &X,
                         arma::vec const &y,
@@ -155,6 +156,7 @@ Rcpp::List loclin_diffX(arma::mat const &X,
 //' @param y The nx1 output vector
 //' @param H a kxk positive definite bandwidth matrix
 //' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+//' @param nthr positive integer; number of threads
 // [[Rcpp::export]]
 Rcpp::List loclin_sameX(arma::mat const &X,
                         arma::vec const &y,
@@ -218,7 +220,6 @@ Rcpp::List loclin_sameX(arma::mat const &X,
 //' @param X an nxk data matrix
 //' @param y The nx1 output vector
 //' @param H a kxk positive definite bandwidth matrix
-//' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
 // [[Rcpp::export]]
 Rcpp::List loclin_sameX_unif(arma::mat const &X,
                              arma::vec const &y,
@@ -273,11 +274,66 @@ Rcpp::List loclin_sameX_unif(arma::mat const &X,
 
 // -----------------------------------------
 // Function that performs local linear
+// regression using uniform kernel
+// -----------------------------------------
+//' Function that performs local linear regression
+//' using Gaussian or Epanechnikov kernel.
+//'
+//' @param X an nxk data matrix
+//' @param y The nx1 output vector
+//' @param H a kxk positive definite bandwidth matrix
+//' @param Xeval an mxp matrix at which to predict using local linear regression
+// [[Rcpp::export]]
+Rcpp::List loclin_diffX_unif(arma::mat const &X,
+                             arma::vec const &y,
+                             double const &H,
+                             arma::mat const &Xeval) {
+  int nrows = X.n_rows, ncols = X.n_cols, neval = Xeval.n_rows;
+  arma::vec pred_vals(neval, arma::fill::zeros);
+  // Initialize first and last element for compact kernels
+  int jfirst=0, jlast=0;
+
+  for(int i=0; i < neval; i++){
+    // First find the new lower bound of kernel support
+    while(jfirst < nrows - 1){
+      if(arma::as_scalar(Xeval(i,1) - X(jfirst,1)) < H){
+        break;
+      }
+      jfirst++;
+    }
+    // Find the new upper bound of kernel support
+    while(jlast < nrows - 1){
+      if(arma::as_scalar(X(jlast, 1) - Xeval(i,1)) > H){
+        jlast--;
+        break;
+      }
+      jlast++;
+    }
+    // If the kernel only contains the point itself, then use datapoint itself
+    if(jfirst==jlast){
+      pred_vals(i) = y(i);
+      continue;
+    }
+    arma::mat Q, R;
+    arma::qr_econ(Q, R, X.rows(jfirst, jlast));
+    arma::vec Qy(ncols, arma::fill::none);
+    arma::vec yw = y.subvec(jfirst, jlast);
+    for(int k = 0; k < ncols; k++){
+      Qy(k) = dot(Q.col(k), yw);
+    }
+    pred_vals(i) = arma::as_scalar(Xeval.row(i)*arma::solve(R, Qy));
+  }
+  List listout = List::create(Named("fitted.values") = pred_vals);
+  return listout;
+}
+
+// -----------------------------------------
+// Function that performs local linear
 // regression over groups using a uniform
 // kernel
 // -----------------------------------------
 //' Function that performs local linear regression
-//' using Gaussian or Epanechnikov kernel.
+//' using uniform kernel, by group
 //'
 //' @param X an nxk data matrix
 //' @param y The nx1 output vector
@@ -326,7 +382,7 @@ Rcpp::List loclin_sameX_unif_by(arma::mat const &X,
       }
       // Find the new upper bound of kernel support
       while(jlast < endj){
-        if(arma::as_scalar(X(jlast, 1) - X(i,1)) > H){
+        if(arma::as_scalar(X(jlast,1) - X(i,1)) > H){
           jlast--;
           break;
         }

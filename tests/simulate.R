@@ -1,5 +1,5 @@
 # Simulate values
-n=1000; grps=1000
+n=1000; grps=100
 X = cbind(rep(1, n*grps), rnorm(n*grps))
 w = rep(1, grps*n)
 g = rep(1:grps, each=n)
@@ -9,5 +9,6 @@ X = X[ord,]
 g = g[ord]
 y = y[ord]
 
-microbenchmark::microbenchmark(crossprod(X,X))
-microbenchmark(fastols_by(X,y,g, nthr=8), loclin_sameX_byunif(X,y,g, 1, nthr=8), times=10)
+# library(microbenchmark)
+# library(looperr)
+# microbenchmark(fastols_by(X,y,g, nthr=8), loclin_sameX_unif_by(X,y,g, 1, nthr=8), times=10)

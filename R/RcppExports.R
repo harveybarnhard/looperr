@@ -11,7 +11,7 @@
 #' @param compute_hat binary; 1 to compute diagonal of hat matrix, 0 otherwise
 #' @export
 fastols <- function(X, y, w, compute_se = 1L, compute_hat = 0L) {
-    .Call('_looperr_fastols', PACKAGE = 'looperr', X, y, w, compute_se, compute_hat)
+    .Call(`_looperr_fastols`, X, y, w, compute_se, compute_hat)
 }
 
 #' Function that performs linear regression
@@ -25,7 +25,7 @@ fastols <- function(X, y, w, compute_se = 1L, compute_hat = 0L) {
 #' @param compute_hat binary; 1 if diagonal of at matrix should be calculated,
 #'     0 if not. 0 by default.
 fastols_by <- function(X, y, g, nthr = 1L, compute_se = 1L, compute_hat = 0L) {
-    .Call('_looperr_fastols_by', PACKAGE = 'looperr', X, y, g, nthr, compute_se, compute_hat)
+    .Call(`_looperr_fastols_by`, X, y, g, nthr, compute_se, compute_hat)
 }
 
 #' Function that performs linear regression
@@ -40,7 +40,7 @@ fastols_by <- function(X, y, g, nthr = 1L, compute_se = 1L, compute_hat = 0L) {
 #' @param compute_hat binary; 1 if diagonal of at matrix should be calculated,
 #'     0 if not. 0 by default.
 fastols_bywt <- function(X, y, w, g, nthr = 1L, compute_se = 1L, compute_hat = 0L) {
-    .Call('_looperr_fastols_bywt', PACKAGE = 'looperr', X, y, w, g, nthr, compute_se, compute_hat)
+    .Call(`_looperr_fastols_bywt`, X, y, w, g, nthr, compute_se, compute_hat)
 }
 
 #' Function that performs local linear regression
@@ -50,8 +50,9 @@ fastols_bywt <- function(X, y, w, g, nthr = 1L, compute_se = 1L, compute_hat = 0
 #' @param H a kxk positive definite bandwidth matrix
 #' @param Xeval an mxp matrix at which to predict using local linear regression
 #' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+#' @param nthr positive integer; number of threads
 loclin_diffX <- function(X, y, H, Xeval, kernel, nthr = 1L) {
-    .Call('_looperr_loclin_diffX', PACKAGE = 'looperr', X, y, H, Xeval, kernel, nthr)
+    .Call(`_looperr_loclin_diffX`, X, y, H, Xeval, kernel, nthr)
 }
 
 #' Function that performs local linear regression
@@ -61,8 +62,9 @@ loclin_diffX <- function(X, y, H, Xeval, kernel, nthr = 1L) {
 #' @param y The nx1 output vector
 #' @param H a kxk positive definite bandwidth matrix
 #' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
+#' @param nthr positive integer; number of threads
 loclin_sameX <- function(X, y, H, kernel, nthr = 1L) {
-    .Call('_looperr_loclin_sameX', PACKAGE = 'looperr', X, y, H, kernel, nthr)
+    .Call(`_looperr_loclin_sameX`, X, y, H, kernel, nthr)
 }
 
 #' Function that performs local linear regression
@@ -71,13 +73,23 @@ loclin_sameX <- function(X, y, H, kernel, nthr = 1L) {
 #' @param X an nxk data matrix
 #' @param y The nx1 output vector
 #' @param H a kxk positive definite bandwidth matrix
-#' @param kernel integer; 1 for Gaussian, 2 for Epanechnikov
 loclin_sameX_unif <- function(X, y, H) {
-    .Call('_looperr_loclin_sameX_unif', PACKAGE = 'looperr', X, y, H)
+    .Call(`_looperr_loclin_sameX_unif`, X, y, H)
 }
 
 #' Function that performs local linear regression
 #' using Gaussian or Epanechnikov kernel.
+#'
+#' @param X an nxk data matrix
+#' @param y The nx1 output vector
+#' @param H a kxk positive definite bandwidth matrix
+#' @param Xeval an mxp matrix at which to predict using local linear regression
+loclin_diffX_unif <- function(X, y, H, Xeval) {
+    .Call(`_looperr_loclin_diffX_unif`, X, y, H, Xeval)
+}
+
+#' Function that performs local linear regression
+#' using uniform kernel, by group
 #'
 #' @param X an nxk data matrix
 #' @param y The nx1 output vector
@@ -85,6 +97,6 @@ loclin_sameX_unif <- function(X, y, H) {
 #' @param H a kxk positive definite bandwidth matrix
 #' @param nthr positive integer; number of threads
 loclin_sameX_unif_by <- function(X, y, g, H, nthr = 1L) {
-    .Call('_looperr_loclin_sameX_unif_by', PACKAGE = 'looperr', X, y, g, H, nthr)
+    .Call(`_looperr_loclin_sameX_unif_by`, X, y, g, H, nthr)
 }
 

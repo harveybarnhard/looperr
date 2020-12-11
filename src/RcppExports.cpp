@@ -98,6 +98,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// loclin_diffX_unif
+Rcpp::List loclin_diffX_unif(arma::mat const& X, arma::vec const& y, double const& H, arma::mat const& Xeval);
+RcppExport SEXP _looperr_loclin_diffX_unif(SEXP XSEXP, SEXP ySEXP, SEXP HSEXP, SEXP XevalSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat const& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double const& >::type H(HSEXP);
+    Rcpp::traits::input_parameter< arma::mat const& >::type Xeval(XevalSEXP);
+    rcpp_result_gen = Rcpp::wrap(loclin_diffX_unif(X, y, H, Xeval));
+    return rcpp_result_gen;
+END_RCPP
+}
 // loclin_sameX_unif_by
 Rcpp::List loclin_sameX_unif_by(arma::mat const& X, arma::vec const& y, IntegerVector const& g, double const& H, int const nthr);
 RcppExport SEXP _looperr_loclin_sameX_unif_by(SEXP XSEXP, SEXP ySEXP, SEXP gSEXP, SEXP HSEXP, SEXP nthrSEXP) {
@@ -112,20 +126,4 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(loclin_sameX_unif_by(X, y, g, H, nthr));
     return rcpp_result_gen;
 END_RCPP
-}
-
-static const R_CallMethodDef CallEntries[] = {
-    {"_looperr_fastols", (DL_FUNC) &_looperr_fastols, 5},
-    {"_looperr_fastols_by", (DL_FUNC) &_looperr_fastols_by, 6},
-    {"_looperr_fastols_bywt", (DL_FUNC) &_looperr_fastols_bywt, 7},
-    {"_looperr_loclin_diffX", (DL_FUNC) &_looperr_loclin_diffX, 6},
-    {"_looperr_loclin_sameX", (DL_FUNC) &_looperr_loclin_sameX, 5},
-    {"_looperr_loclin_sameX_unif", (DL_FUNC) &_looperr_loclin_sameX_unif, 3},
-    {"_looperr_loclin_sameX_unif_by", (DL_FUNC) &_looperr_loclin_sameX_unif_by, 5},
-    {NULL, NULL, 0}
-};
-
-RcppExport void R_init_looperr(DllInfo *dll) {
-    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-    R_useDynamicSymbols(dll, FALSE);
 }

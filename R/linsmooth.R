@@ -13,7 +13,7 @@
 #' @param H positive vector; Bandwidth vector that represents diagonal of
 #'     bandwidth matrix used if "loclin" method is used. Defaults
 #'     to a diagonal matrix being optimized by minimizing LOOCV score.
-#' @param g an nx1 vector of groups if performing linear smoothing within
+#' @param bygroup an nx1 vector of groups if performing linear smoothing within
 #'     groups.
 #' @param compute_se logical; If TRUE then OLS procedure will compute standard
 #'     errors. TRUE by default.
@@ -61,7 +61,7 @@ linsmooth = function(X,
   compute_hat = as.integer(compute_hat)
 
   # If there is no constant column, add one
-  colsd = apply(X, 2, var)
+  colsd = apply(X, 2, stats::var)
   if(all(colsd!=0)){
     X = cbind(rep(1, n), X)
     if(!Xevalsame){
@@ -84,11 +84,11 @@ linsmooth = function(X,
     }
     if(is.null(H)){
       if(ncol(X)==2){
-        H = optim(1, function(h) loclin_sameX(X, y, matrix(h), kernel=kern)[["cvscore"]],
-                     lower=0, upper=max(X[,2])-min(X[,2]), method="Brent", control=list(maxit=8))$par
+        H = stats::optim(1, function(h) loclin_sameX(X, y, matrix(h), kernel=kern)[["cvscore"]],
+                         lower=0, upper=max(X[,2])-min(X[,2]), method="Brent", control=list(maxit=8))$par
       }else{
-        H = optim(1, function(h) loclin_sameX(X, y, diag(h, k-1, k-1), kernel=kern)[["cvscore"]],
-                     method="Nelder-Mead", control=list(maxit=10))$par
+        H = stats::optim(1, function(h) loclin_sameX(X, y, diag(h, k-1, k-1), kernel=kern)[["cvscore"]],
+                         method="Nelder-Mead", control=list(maxit=10))$par
       }
     }
     if(is.null(Xeval)){
@@ -99,16 +99,18 @@ linsmooth = function(X,
     output["bandwidth"] = H
     return(output)
   }else if(method=="ols"){
-    if(is.null(w)){
-      w = rep(1, length(y))
-    }
     if(!is.null(bygroup)){
-      ind = order(g)
-      gsorted = as.integer(cumsum(!duplicated(g[ind])))
-      output = fastols_by(X[ind,], y[ind], w[ind], gsorted, nthr=nthreads,
-                          compute_se = compute_se, compute_hat = compute_hat)
+      ind = order(bygroup)
+      gsorted = as.integer(cumsum(!duplicated(bygroup[ind])))
+      if(!is.null(w)){
+        output = fastols_bywt(X[ind,], y[ind], w[ind], gsorted, nthr=nthreads,
+                              compute_se = compute_se, compute_hat = compute_hat)
+      }else{
+        output = fastols_by(X[ind,], y[ind], gsorted, nthr=nthreads,
+                            compute_se = compute_se, compute_hat = compute_hat)
+      }
     }else{
-      fastols(x,y,w)
+      fastols(X,y,w)
     }
     return(output)
   }

@@ -5,7 +5,7 @@
 \title{Function that performs local linear regression
 using Gaussian or Epanechnikov kernel.}
 \usage{
-loclin_diffX(X, y, H, Xeval, kernel)
+loclin_diffX(X, y, H, Xeval, kernel, nthr = 1L)
 }
 \arguments{
 \item{X}{an nxk data matrix}
@@ -17,6 +17,8 @@ loclin_diffX(X, y, H, Xeval, kernel)
 \item{Xeval}{an mxp matrix at which to predict using local linear regression}
 
 \item{kernel}{integer; 1 for Gaussian, 2 for Epanechnikov}
+
+\item{nthr}{positive integer; number of threads}
 }
 \description{
 Function that performs local linear regression

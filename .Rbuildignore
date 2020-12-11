@@ -1,3 +1,6 @@
 ^looperr\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+^examples$
+^LICENSE\.md$
+^\.github$
