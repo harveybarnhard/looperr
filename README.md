@@ -18,6 +18,13 @@ Fast implementation in C++ using OpenMP and stable QR methods.
 
 ![](examples/looperr_example1.png)
 
+# Setup and Installation
+The package has been tested and runs on Windows 10 and Ubuntu 20.04.
+Changes are being made so that the package will also run on Mac OS X.
+```r
+devtools::install_github("harveybarnhard/looperr")
+```
+
 # Usage
 The main function of this package is `linsmooth()` which
 performs a similar role to the standard `lm()` function for
@@ -50,9 +57,3 @@ see my
 [blog post](https://harveybarnhard.com/posts/evaluating-prediction-error.html)
 on this package. The blog post is currently incomplete, and
 more proofs will be added later.
-
-# Setup and Installation
-
-```r
-devtools::install_github("harveybarnhard/looperr")
-```
