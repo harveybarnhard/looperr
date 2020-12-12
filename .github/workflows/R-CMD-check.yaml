@@ -37,15 +37,8 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Configure git
-        run: git config --global core.autocrlf false
-      - name: Install Open MP on Mac
-        if: runner.os == 'macOS'
-        run: |
-          brew install libomp
-          rm '/usr/local/bin/gfortran'
-          brew install gcc
       - uses: actions/checkout@v2
+
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
@@ -74,6 +67,22 @@ jobs:
           do
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+      - name: Install Open MP on Mac
+        if: runner.os == 'macOS'
+        run: |
+          brew install libomp
+          rm '/usr/local/bin/gfortran'
+          brew install gcc@9
+          export test_variable
+          mkdir ~/.R
+          touch ~/.R/Makevars
+          {
+            VER=-9
+            echo CXX=g++$VER
+            echo CXX1X=g++$VER
+            echo CXX11=g++$VER
+            echo CXX14=g++$VER
+          } >~/.R/Makevars
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
