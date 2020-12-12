@@ -39,8 +39,13 @@ jobs:
     steps:
       - name: Configure git
         run: git config --global core.autocrlf false
+      - name: Install Open MP on Mac
+        if: runner.os == 'macOS'
+        run: |
+          brew install libomp
+          rm '/usr/local/bin/gfortran'
+          brew install gcc
       - uses: actions/checkout@v2
-
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
@@ -69,12 +74,6 @@ jobs:
           do
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-      - name: Install Open MP on Mac
-        if: runner.os == 'macOS'
-        run: |
-          brew install libomp
-          rm '/usr/local/bin/gfortran'
-          brew install gcc
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
