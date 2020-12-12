@@ -1,7 +1,7 @@
 # looperr
 <!-- badges: start -->
   [![R build status](https://github.com/harveybarnhard/looperr/workflows/R-CMD-check/badge.svg)](https://github.com/harveybarnhard/looperr/actions)
-  <img src="https://www.r-pkg.org/badges/version/looperr" alt="looperr CRAN badge">
+  [![CRAN Status](https://www.r-pkg.org/badges/version/looperr)](https://www.r-pkg.org/badges/version/looperr)
 <!-- badges: end -->
 
 An R package for quickly performing **l**inear sm**oo**thing by grou**p** (**loop**) while
