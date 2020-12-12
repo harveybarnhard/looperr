@@ -8,11 +8,8 @@ An R package for quickly performing **l**inear sm**oo**thing by grou**p** (**loo
 simultaneously computing prediction error (**err**). Or maybe an R package
 for quickly performing leave-one-out (**loo**) prediction error (**perr**).
 
-Smoothing methods include:
-* Linear regression
-* Weighted linear regression
-* local polynomial regression with uniform, Gaussian, or Epanechnikov kernel
 
+## Smoothing Methods
 <p align="center">
 <table>
     <thead>
