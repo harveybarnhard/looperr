@@ -71,8 +71,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libomp
+          rm '/usr/local/bin/gfortran'
           brew install gcc
-          brew link --overwrite gcc
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
