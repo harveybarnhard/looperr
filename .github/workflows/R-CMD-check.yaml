@@ -68,7 +68,8 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
         elif: runner.os == 'macOS'
-        run: brew install libomp
+        run: |
+          brew install libomp
 
       - name: Install dependencies
         run: |
