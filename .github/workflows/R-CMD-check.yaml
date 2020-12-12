@@ -71,6 +71,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libomp
+          brew install gcc
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
