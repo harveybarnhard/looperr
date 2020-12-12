@@ -1,5 +1,4 @@
 # looperr
-:warning: This package is still under development, please report any and all problems as GitHub issues!
 <!-- badges: start -->
   [![R build status](https://github.com/harveybarnhard/looperr/workflows/R-CMD-check/badge.svg)](https://github.com/harveybarnhard/looperr/actions)
   <img src="https://www.r-pkg.org/badges/version/looperr" alt="looperr CRAN badge">
