@@ -71,7 +71,6 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libomp
-          rm '/usr/local/bin/gfortran'
           brew install gcc@9
           export test_variable
           mkdir ~/.R
