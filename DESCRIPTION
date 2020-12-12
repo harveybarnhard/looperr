@@ -1,11 +1,8 @@
 Package: looperr
 Title: Fast Regressions by Group
 Version: 0.0.0.9000
-Authors@R: c(person("Joe", "Developer", role = c("aut", "cre"),
-                     email = "Joe.Developer@some.domain.net"),
-              person("Pat", "Developer", role = "aut"),
-              person("A.", "User", role = "ctb",
-                     email = "A.User@whereever.net"))
+Authors@R: c(person("Harvey", "Barnhard", role = c("aut", "cre"),
+                     email = "harveybarnhard@gmail.com"))
 Description: Fast regressions by group.
 License: MIT + file LICENSE
 Encoding: UTF-8
