@@ -13,6 +13,47 @@ Smoothing methods include:
 * Weighted linear regression
 * local polynomial regression with uniform, Gaussian, or Epanechnikov kernel
 
+<p align="center">
+<table>
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Submethod</th>
+            <th>Multivariate</th>
+            <th>By Group?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=2>Least-Squares Regression</td>
+            <td rowspan=1>Unweighted</td>
+            <td>Yes</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>Weighted</td>
+            <td>Yes</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td rowspan=3>Local Linear Regression</td>
+            <td>Uniform Kernel</td>
+            <td>No</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>Epanechnikov Kernel</td>
+            <td>No</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>Gaussian Kernel</td>
+            <td>No</td>
+            <td>No</td>
+        </tr>
+    </tbody>
+</table>
+</p>
 Fast implementation in C++ using OpenMP and stable QR methods. 
 
 ![](examples/looperr_example1.png)
