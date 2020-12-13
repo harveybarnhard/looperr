@@ -82,7 +82,7 @@ jobs:
             echo CXX17=g++$(VER)
             echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
             echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
-            echo FLIBS=-/usr/local/Cellar/gcc/9.3.0/lib/gcc/9
+            echo FLIBS=-L/usr/bin/gcc
           } >~/.R/Makevars
           which gcc
       - name: Install dependencies
