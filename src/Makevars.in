@@ -1,5 +1,5 @@
-// Copied from the data.table package under the Mozilla public license 2.0
-// https://github.com/Rdatatable/data.table/blob/master/src/Makevars.in
+# Copied from the data.table package under the Mozilla public license 2.0
+# https://github.com/Rdatatable/data.table/blob/master/src/Makevars.in
 PKG_CFLAGS = @PKG_CFLAGS@ @openmp_cflags@
 PKG_LIBS = @PKG_LIBS@ @openmp_cflags@ -lz
 # See WRE $1.2.1.1. But retain user supplied PKG_* too, #4664.
