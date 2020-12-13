@@ -71,7 +71,6 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libomp
-          brew install gcc@9
           mkdir ~/.R
           touch ~/.R/Makevars
           {
@@ -83,7 +82,7 @@ jobs:
             echo CXX17=g++$(VER)
             echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
             echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
-            echo FLIBS=-L/usr/local/Cellar/gcc/8.2.0/lib/gcc/8
+            echo FLIBS=-L/usr/local/Cellar/gcc/9.3.0/lib/gcc/9
           } >~/.R/Makevars
       - name: Install dependencies
         run: |
