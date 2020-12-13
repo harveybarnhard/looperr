@@ -92,16 +92,7 @@ jobs:
           } >~/.R/Makevars
           which gcc
           gcc --version
-          export CC=/usr/local/Cellar/gcc
-          export CXX=/usr/local/Cellar/g++
-          export CPP=/usr/local/Cellar/cpp
-          export LD=/usr/local/Cellar/gcc
-          alias c++=/usr/local/Cellar/c++
-          alias g++=/usr/local/Cellar/g++
-          alias gcc=/usr/local/Cellar/gcc
-          alias cpp=/usr/local/Cellar/cpp
-          alias ld=/usr/local/Cellar/gcc
-          alias cc=/usr/local/Cellar/gcc
+          brew unlink gcc && brew link gcc
           which gcc
           gcc --version
       - name: Install dependencies
