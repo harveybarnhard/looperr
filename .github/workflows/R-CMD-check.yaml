@@ -84,6 +84,8 @@ jobs:
             echo F77=/usr/bin/gfortran
             echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
             echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
+            FC = /usr/local/gfortran/bin/gfortran
+            FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin18/8.2.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm
           } >~/.R/Makevars
           which gcc
       - name: Install dependencies
