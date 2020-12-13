@@ -54,8 +54,6 @@ Fast implementation in C++ using OpenMP and non-redundant matrix decomposition m
 </table>
 </p> 
 
-![](examples/looperr_example1.png)
-
 # Setup and Installation
 The package has been tested and runs on Windows 10 and Ubuntu 20.04.
 Changes are being made so that the package will also run on Mac OS X.
@@ -86,7 +84,7 @@ linsmooth(X, y, method="loclin", kernel="epan")
 # Local linear regression with Epanechnikov kernel and bandwidth H=1
 linsmooth(X, y, method="loclin", H=1)
 ```
-
+![](examples/looperr_example1.png)
 # Theory
 This package uses a bunch of linear algebra "tricks" to reduce
 the number of computations, leading to quicker runtimes
