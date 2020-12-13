@@ -75,11 +75,11 @@ jobs:
           touch ~/.R/Makevars
           {
             echo VER=-9
-            echo CC=gcc$(VER)
-            echo CXX=g++$(VER)
-            echo CXX11=g++$(VER)
-            echo CXX14=g++$(VER)
-            echo CXX17=g++$(VER)
+            echo CC=gcc$VER
+            echo CXX=g++$VER
+            echo CXX11=g++$VER
+            echo CXX14=g++$VER
+            echo CXX17=g++$VER
             echo FC=/usr/bin/gfortran
             echo F77=/usr/bin/gfortran
             echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
