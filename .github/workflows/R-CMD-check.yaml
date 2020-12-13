@@ -71,6 +71,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libomp
+          brew install gcc
           mkdir ~/.R
           touch ~/.R/Makevars
           {
@@ -85,9 +86,10 @@ jobs:
             echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
             echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
             echo FC = /usr/local/gfortran/bin/gfortran
-            echo FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin18/8.2.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm
+            echo FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin18/9.3.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm
           } >~/.R/Makevars
           which gcc
+          gcc --version
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
