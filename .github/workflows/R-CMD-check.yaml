@@ -71,7 +71,9 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install libomp
+          rm '/usr/local/bin/gfortran'
           brew install gcc
+          brew link --overwrite gcc
           mkdir ~/.R
           touch ~/.R/Makevars
           {
