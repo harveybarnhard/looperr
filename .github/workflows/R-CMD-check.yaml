@@ -87,7 +87,7 @@ jobs:
             echo FC=/usr/bin/gfortran
             echo F77=/usr/bin/gfortran
             echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
-            echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
+            echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion -fopenmp
             echo F77="gfortran-4.8"
             echo FC="gfortran-4.8"
             echo FLIBS = ""
