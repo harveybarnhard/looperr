@@ -107,12 +107,9 @@ if [ "$R_NO_OPENMP" = "1" ]; then
   echo "*** Continuing installation without OpenMP support..."
   sed -e "s|@openmp_cxxflags@||" src/Makevars.in > src/Makevars
 else
-  PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
-  PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
   sed -e "s|@openmp_cxxflags@|\$(SHLIB_OPENMP_CXXFLAGS)|" src/Makevars.in > src/Makevars
+  sed -e "s|@PKG_CXXFLAGS@|\$(SHLIB_OPENMP_CXXFLAGS)|" src/Makevars > src/Makevars
+  sed -e "s|@PKG_LIBS@|\$(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)|" src/Makevars > src/Makevars
 fi
-# retain user supplied PKG_ env variables, #4664. See comments in Makevars.in too.
-sed -e "s|@PKG_CXXFLAGS@|$PKG_CXXFLAGS|" src/Makevars > src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
-sed -e "s|@PKG_LIBS@|$PKG_LIBS|" src/Makevars > src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
 
 exit 0
