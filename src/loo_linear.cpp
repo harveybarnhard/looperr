@@ -2,7 +2,7 @@
 // [[Rcpp::plugins("cpp11")]]
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
-#include <omp.h>
+#include "myomp.h"
 using namespace Rcpp;
 
 // -----------------------------------------
@@ -182,7 +182,7 @@ Rcpp::List fastols_bywt(arma::mat const &X,
   hat(nrows, arma::fill::zeros),
   pred_err(nrows, arma::fill::zeros),
   start(nrows, arma::fill::zeros);
-  
+
   // Weight
   arma::vec ws = sqrt(w);
   arma::mat Xw = X.each_col() % ws;

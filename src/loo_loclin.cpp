@@ -1,7 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
-#include <omp.h>
+#include "myomp.h"
 using namespace Rcpp;
 
 // ------------------------------------------------

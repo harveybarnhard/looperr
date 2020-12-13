@@ -1,4 +1,6 @@
 // Header file to determine when OpenMP should be used
+// Copied from the data.table package under the Mozilla public license 2.0
+// https://github.com/Rdatatable/data.table/blob/master/configure
 #ifdef _OPENMP
   // for machines with compiles with OpenMP support
   #include <omp.h>
