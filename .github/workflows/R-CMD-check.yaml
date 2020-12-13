@@ -92,8 +92,8 @@ jobs:
             FC="gfortran-4.8"
             echo FLIBS = ""
           } >~/.R/Makevars
-          which gcc-10
-          gcc-10 --version
+          which g++
+          g++ --version
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
