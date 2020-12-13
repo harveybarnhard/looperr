@@ -75,7 +75,6 @@ jobs:
           brew install libomp
           rm '/usr/local/bin/gfortran'
           brew install gcc
-          tou
           mkdir ~/.R
           touch ~/.R/Makevars
           {
