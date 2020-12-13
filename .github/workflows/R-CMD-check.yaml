@@ -84,6 +84,7 @@ jobs:
             echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
             echo FLIBS=-/usr/local/Cellar/gcc/9.3.0/lib/gcc/9
           } >~/.R/Makevars
+          which gcc
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
