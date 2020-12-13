@@ -79,21 +79,23 @@ jobs:
           touch ~/.R/Makevars
           {
             echo VER=-10
-            echo CC=gcc$VER
-            echo CXX=g++$VER
-            echo CXX11=g++$VER
-            echo CXX14=g++$VER
-            echo CXX17=g++$VER
+            echo CC=gcc-10
+            echo CXX=g++-10
+            echo CXX11=g++-10
+            echo CXX14=g++-10
+            echo CXX17=g++-10
             echo FC=/usr/bin/gfortran
             echo F77=/usr/bin/gfortran
             echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
             echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
-            F77="gfortran-4.8"
-            FC="gfortran-4.8"
+            echo F77="gfortran-4.8"
+            echo FC="gfortran-4.8"
             echo FLIBS = ""
           } >~/.R/Makevars
           which g++
           g++ --version
+          which g++-10
+          g++-10 --version
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
