@@ -12,7 +12,7 @@ RoxygenNote: 7.1.1
 LinkingTo:
     Rcpp, RcppArmadillo
 Imports:
-    Rcpp, stats
+    Rcpp, RcppArmadillo, stats
 Depends:
 Suggests:
-    testthat
+    testthat, data.table
