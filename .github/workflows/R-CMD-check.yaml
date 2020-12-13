@@ -88,8 +88,9 @@ jobs:
             echo F77=/usr/bin/gfortran
             echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
             echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic -Wconversion
-            echo FC = /usr/local/gfortran/bin/gfortran
-            echo FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin18/9.3.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm
+            F77="gfortran-4.8"
+            FC="gfortran-4.8"
+            echo FLIBS = ""
           } >~/.R/Makevars
           which gcc-10
           gcc-10 --version
