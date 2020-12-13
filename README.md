@@ -45,7 +45,7 @@ for quickly performing leave-one-out (**loo**) prediction error (**perr**).
         </tr>
         <tr>
             <td>Gaussian Kernel</td>
-            <td>❌</td>
+            <td>✔️</td>
             <td>❌</td>
         </tr>
     </tbody>
