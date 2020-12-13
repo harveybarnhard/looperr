@@ -24,29 +24,29 @@ for quickly performing leave-one-out (**loo**) prediction error (**perr**).
         <tr>
             <td rowspan=2>Least-Squares Regression</td>
             <td rowspan=1>Unweighted</td>
-            <td>Yes</td>
-            <td>Yes</td>
+            <td>✔️</td>
+            <td>✔️</td>
         </tr>
         <tr>
             <td>Weighted</td>
-            <td>Yes</td>
-            <td>Yes</td>
+            <td>✔️</td>
+            <td>✔️</td>
         </tr>
         <tr>
             <td rowspan=3>Local Linear Regression</td>
             <td>Uniform Kernel</td>
-            <td>No</td>
-            <td>Yes</td>
+            <td>❌</td>
+            <td>✔️</td>
         </tr>
         <tr>
             <td>Epanechnikov Kernel</td>
-            <td>No</td>
-            <td>No</td>
+            <td>❌</td>
+            <td>❌</td>
         </tr>
         <tr>
             <td>Gaussian Kernel</td>
-            <td>No</td>
-            <td>No</td>
+            <td>✔️</td>
+            <td>❌</td>
         </tr>
     </tbody>
 </table>
