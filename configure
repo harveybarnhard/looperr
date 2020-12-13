@@ -83,7 +83,7 @@ int main() {
 EOF
 
 # First, try R CMD SHLIB to see if R can already compile
-# things using OpenMP without any extra help from data.table
+# things using OpenMP without any extra help from looperr
 "${R_HOME}/bin/R" CMD SHLIB test-omp.c >/dev/null 2>&1 || R_NO_OPENMP=1
 
 if [ "$R_NO_OPENMP" = "1" ]; then
@@ -100,8 +100,8 @@ rm -f test-omp.* a.out
 
 # Write to Makevars
 if [ "$R_NO_OPENMP" = "1" ]; then
-  echo "*** OpenMP not supported! data.table uses OpenMP to automatically"
-  echo "***   parallelize operations like sorting, grouping, file reading, etc."
+  echo "*** OpenMP not supported! looperr uses OpenMP to automatically"
+  echo "***   parallelize operations."
   echo "*** For details on how to install the necessary toolchains on your OS see:"
   echo "***   https://github.com/Rdatatable/data.table/wiki/Installation"
   echo "*** Continuing installation without OpenMP support..."
