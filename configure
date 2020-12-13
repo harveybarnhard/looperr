@@ -5,10 +5,10 @@
 
 # Find R compilers
 CC=`${R_HOME}/bin/R CMD config CC`
-CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
+CXXFLAGS=`${R_HOME}/bin/R CMD config CXXFLAGS`
 # compiler and flags to 'cc' file
 echo "CC=${CC}" > inst/cc
-echo "CFLAGS=${CFLAGS}" >> inst/cc
+echo "CXXFLAGS=${CXXFLAGS}" >> inst/cc
 
 # gcc compiler info to output #3291
 case $CC in gcc*)
@@ -75,7 +75,7 @@ fi
 # necessarily here in configure). Hence use -fopenmp directly for this detection step.
 # printf not echo to pass checkbashisms w.r.t. to the \n
 
-cat <<EOF > test-omp.c
+cat <<EOF > test-omp.cpp
 #include <omp.h>
 int main() {
   return omp_get_num_threads();
@@ -89,7 +89,7 @@ EOF
 if [ "$R_NO_OPENMP" = "1" ]; then
   # Compilation failed -- try forcing -fopenmp instead.
   # TODO: doesn't R_NO_OPENMP need to be set to 0 before next line?
-  ${CC} ${CFLAGS} -fopenmp test-omp.c || R_NO_OPENMP=1
+  ${CC} ${CXXFLAGS} -fopenmp test-omp.c || R_NO_OPENMP=1
   # TODO: and then nothing seems to be done with this outcome
 else
   echo "R CMD SHLIB supports OpenMP without any extra hint"
@@ -112,7 +112,7 @@ else
   sed -e "s|@openmp_cxxflags@|\$(SHLIB_OPENMP_CXXFLAGS)|" src/Makevars.in > src/Makevars
 fi
 # retain user supplied PKG_ env variables, #4664. See comments in Makevars.in too.
-sed -e "s|@PKG_CFLAGS@|$PKG_CFLAGS|" src/Makevars > src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
+sed -e "s|@PKG_CXXFLAGS@|$PKG_CXXFLAGS|" src/Makevars > src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
 sed -e "s|@PKG_LIBS@|$PKG_LIBS|" src/Makevars > src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
 
 exit 0
