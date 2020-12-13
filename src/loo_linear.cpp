@@ -92,8 +92,6 @@ Rcpp::List fastols_by(arma::mat const &X,
   start(nrows, arma::fill::zeros),
   res(nrows, arma::fill::zeros);
 
-  omp_set_num_threads(nthr);
-
   // Find start and endpoints of group, assuming g is already sorted
   int cur = g(0);
   int numgrps = 1;
@@ -109,7 +107,7 @@ Rcpp::List fastols_by(arma::mat const &X,
   // Initialize matrix to store coefficients and loop over groups
   arma::mat betamat(ncols, numgrps, arma::fill::none);
   arma::mat varmat(ncols, numgrps, arma::fill::zeros);
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic, nthr)
   for(int j=0; j < numgrps; j++){
     int startj = start(j), endj = start(j + 1) - 1;
     // Solve OLS using fast QR decomposition
@@ -137,7 +135,7 @@ Rcpp::List fastols_by(arma::mat const &X,
   if(compute_se == 1){
     arma::vec tmp = pow(res, 2);
     arma::vec denom = arma::shift(start, -1) - start - ncols;
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic, nthr)
     for(int j = 0; j < numgrps; j++){
       varmat.col(j) *= arma::sum(tmp.subvec(start(j), start(j + 1) - 1))/denom(j);
     }
@@ -184,7 +182,7 @@ Rcpp::List fastols_bywt(arma::mat const &X,
   hat(nrows, arma::fill::zeros),
   pred_err(nrows, arma::fill::zeros),
   start(nrows, arma::fill::zeros);
-  omp_set_num_threads(nthr);
+  
   // Weight
   arma::vec ws = sqrt(w);
   arma::mat Xw = X.each_col() % ws;
@@ -249,4 +247,3 @@ Rcpp::List fastols_bywt(arma::mat const &X,
                               Named("variance")      = varmat);
   return listout;
 }
-

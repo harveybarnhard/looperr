@@ -109,13 +109,12 @@ Rcpp::List loclin_diffX(arma::mat const &X,
   arma::uvec colind = arma::regspace<arma::uvec>(1,1,ncols - 1);
   arma::vec pred_vals(neval, arma::fill::zeros);
   arma::vec ws(nrows, arma::fill::ones);
-  omp_set_num_threads(nthr);
   // Perform Cholesky decomposition of H
   arma::mat cholH = H;
   if((ncols > 2) && (kernel==1)) {
     cholH = arma::chol(H, "lower");
   }
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic, nthr)
   for(int i=0; i < neval; i++){
     arma::rowvec x0 = Xeval.row(i);
     // Determine weights using a multivariate Gaussian Kernel
@@ -169,14 +168,13 @@ Rcpp::List loclin_sameX(arma::mat const &X,
   arma::vec hat(nrows, arma::fill::zeros);
   arma::vec pred_err(nrows, arma::fill::zeros);
   arma::vec ws(nrows, arma::fill::ones);
-  omp_set_num_threads(nthr);
 
   // Perform Cholesky decomposition of H
   arma::mat cholH = H;
   if((ncols > 2) && (kernel==1)) {
     cholH = arma::chol(H, "lower");
   }
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic, nthr)
   for(int i=0; i < nrows; i++){
     arma::rowvec x0 = X.row(i);
     // Determine weights using a multivariate Gaussian Kernel
@@ -351,7 +349,6 @@ Rcpp::List loclin_sameX_unif_by(arma::mat const &X,
   arma::vec pred_vals(nrows, arma::fill::zeros);
   arma::vec hat(nrows, arma::fill::zeros);
   arma::vec start(nrows, arma::fill::zeros);
-  omp_set_num_threads(nthr);
 
   // Find start and endpoints of group, assuming g is already sorted
   int cur = g(0);
@@ -366,7 +363,7 @@ Rcpp::List loclin_sameX_unif_by(arma::mat const &X,
   start(numgrps) = nrows;
   start = start.head(numgrps + 1);
   // Loop over groups
-#pragma omp parallel for
+#pragma omp parallel for schedule(dynamic, nthr)
   for(int j=0; j < numgrps; j++){
     // Start and endpoints of group
     int startj = start(j), endj = start(j + 1) - 1;
