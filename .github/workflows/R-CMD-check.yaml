@@ -75,7 +75,7 @@ jobs:
           mkdir ~/.R
           touch ~/.R/Makevars
           {
-            echo VER=-8
+            echo VER=-9
             echo CC=gcc$(VER)
             echo CXX=g++$(VER)
             echo CXX11=g++$(VER)
