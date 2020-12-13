@@ -91,12 +91,8 @@ jobs:
             echo FC = /usr/local/gfortran/bin/gfortran
             echo FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin18/9.3.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm
           } >~/.R/Makevars
-          alias gcc='gcc-10'
-          alias cc='gcc-10'
-          alias g++='g++-10'
-          alias c++='c++-10'
-          which gcc
-          gcc --version
+          which gcc-10
+          gcc-10 --version
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
