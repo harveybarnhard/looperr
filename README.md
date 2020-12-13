@@ -8,6 +8,8 @@ An R package for quickly performing **l**inear sm**oo**thing by grou**p** (**loo
 simultaneously computing prediction error (**err**). Or maybe an R package
 for quickly performing leave-one-out (**loo**) prediction error (**perr**).
 
+Fast implementation in C++ using OpenMP and non-redundant matrix decomposition methods.
+
 
 ## Smoothing Methods
 <p align="center">
@@ -50,8 +52,7 @@ for quickly performing leave-one-out (**loo**) prediction error (**perr**).
         </tr>
     </tbody>
 </table>
-</p>
-Fast implementation in C++ using OpenMP and stable QR methods. 
+</p> 
 
 ![](examples/looperr_example1.png)
 
