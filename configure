@@ -111,6 +111,6 @@ else
 fi
 # retain user supplied PKG_ env variables, #4664. See comments in Makevars.in too.
 sed -e "s|@PKG_CFLAGS@|$PKG_CFLAGS|" src/Makevars > src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
-sed -e "s|@PKG_LIBS@|$PKG_LIBS|" src/Makevars > src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
+sed -e "s|@PKG_LIBS@|$(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)|" src/Makevars > src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
 
 exit 0
