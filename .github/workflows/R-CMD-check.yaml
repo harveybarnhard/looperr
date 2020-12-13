@@ -29,7 +29,9 @@ jobs:
         config:
           - {os: windows-latest, r: 'release'}
           - {os: macOS-latest, r: 'release'}
+          - {os: macOS-latest, r: 'release', withopenmp: 'yes'}
           - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          - {os: ubuntu-20.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -68,7 +70,7 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
       - name: Install Open MP on Mac
-        if: runner.os == 'macOS'
+        if: ${{ matrix.config.os == 'macOS-latest' && withopenmp == 'yes'}}
         run: |
           which gcc
           gcc --version
