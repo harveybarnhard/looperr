@@ -108,16 +108,16 @@ Rcpp::List loclin_diffX(arma::mat const &X,
   int nrows = X.n_rows, ncols = X.n_cols, neval = Xeval.n_rows;
   arma::uvec colind = arma::regspace<arma::uvec>(1,1,ncols - 1);
   arma::vec pred_vals(neval, arma::fill::zeros);
-  arma::vec ws(nrows, arma::fill::ones);
   // Perform Cholesky decomposition of H
   arma::mat cholH = H;
   if((ncols > 2) && (kernel==1)) {
     cholH = arma::chol(H, "lower");
   }
-#pragma omp parallel for schedule(dynamic, nthr)
+#pragma omp parallel for schedule(static, nthr)
   for(int i=0; i < neval; i++){
     arma::rowvec x0 = Xeval.row(i);
     // Determine weights using a multivariate Gaussian Kernel
+    arma::vec ws(nrows, arma::fill::ones);
     if(kernel==1){
       ws = sqrt(gausskern(X.cols(colind), x0(colind), cholH));
     }
@@ -167,17 +167,17 @@ Rcpp::List loclin_sameX(arma::mat const &X,
   arma::vec pred_vals(nrows, arma::fill::zeros);
   arma::vec hat(nrows, arma::fill::zeros);
   arma::vec pred_err(nrows, arma::fill::zeros);
-  arma::vec ws(nrows, arma::fill::ones);
 
   // Perform Cholesky decomposition of H
   arma::mat cholH = H;
   if((ncols > 2) && (kernel==1)) {
     cholH = arma::chol(H, "lower");
   }
-#pragma omp parallel for schedule(dynamic, nthr)
+#pragma omp parallel for schedule(static, nthr)
   for(int i=0; i < nrows; i++){
     arma::rowvec x0 = X.row(i);
     // Determine weights using a multivariate Gaussian Kernel
+    arma::vec ws(nrows, arma::fill::ones);
     if(kernel==1){
       ws = sqrt(gausskern(X.cols(colind), x0(colind), cholH));
     }
