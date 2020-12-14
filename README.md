@@ -88,51 +88,11 @@ Installation is the same for Windows, Linux, and Mac. Just type the following in
 ```r
 devtools::install_github("harveybarnhard/looperr")
 ```
-## Extra Setup and Installation for Mac (Speed Improvements)
-If you have a Mac and want to take advantage of parallelization
-for fast run-times, then you'll likely have to take some extra steps
-if your default compiler (clang on Mac) does not have OpenMP support.
-If you're on a Windows or Linux machine, no need to read further--you're
-already benefitting from OpenMP parallelization.
-
-The easiest way to get OpenMP support for looperr on a Mac 
-is to change the default R compiler to gcc from
-clang. Here's a step-by-ste on how to do this via the Mac Terminal.
-First, we will need to install OpenMP.
-```shell
-brew install libomp
-```
-If you have any problems, you might have to install the 
-[Homebrew package manager](https://brew.sh/).
-Next, we want to install our new OpenMP enabled compiler gcc. Before installing,
-we remove gfortran (fortran compiler) because `brew install gcc` will install
-its own version
-```shell
-rm '/usr/local/bin/gfortran'
-brew install gcc
-```
-Finally, we create a Makevars file which sets the default C, C++, and Fortran
-compilers (in this case to gcc version 10). You can create this file "by hand"
-but you might as well just create it in the terminal as follows:
-```shell
-mkdir ~/.R
-touch ~/.R/Makevars
-{
-  echo VER=-10
-  echo CC=gcc-10
-  echo CXX=g++-10
-  echo CXX11=g++-10
-  echo CXX14=g++-10
-  echo CXX17=g++-10
-  echo FC=/usr/bin/gfortran
-  echo F77=/usr/bin/gfortran
-  echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic
-  echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic
-  echo F77="gfortran-4.8"
-  echo FC="gfortran-4.8"
-  echo FLIBS = ""
-} >~/.R/Makevars
-```
+However, since the default compiler of Mac OS does not support OpenMP,
+you will not benefit from the increased efficiency of parallelization
+unless you perform some extra setup steps. See the 
+[looperr wiki page](https://github.com/harveybarnhard/looperr/wiki/Extra-Setup-and-Installation-for-Mac)
+for these extra installation steps.
 
 # Usage
 The main function of this package is `linsmooth()` which
