@@ -10,7 +10,6 @@ for quickly performing leave-one-out (**loo**) prediction error (**perr**).
 
 Fast implementation in C++ using OpenMP and non-redundant matrix decomposition methods.
 
-
 ## Smoothing Methods
 <p align="center">
 <table>
@@ -54,14 +53,17 @@ Fast implementation in C++ using OpenMP and non-redundant matrix decomposition m
 </table>
 </p> 
 
-# Setup and Installation
-Installation is the same for Windows, Linux, and Mac
+# Setup and Installation for Windows, Linux, and Mac
+Installation is the same for Windows, Linux, and Mac. Just type the following in the R Console:
 ```r
 devtools::install_github("harveybarnhard/looperr")
 ```
-However, if you have a Mac and want to take advantage of parallelization
+## Extra Setup and Installation for Mac for Improved Efficiency
+If you have a Mac and want to take advantage of parallelization
 for fast run-times, then you'll likely have to take some extra steps
 if your default compiler (clang on Mac) does not have OpenMP support.
+If you're on a Windows or Linux machine, no need to read further--you're
+already benefitting from OpenMP parallelization.
 
 The easiest way to get OpenMP support for looperr on a Mac 
 is to change the default R compiler to gcc from
