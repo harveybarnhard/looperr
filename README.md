@@ -10,8 +10,7 @@ for quickly performing leave-one-out (**loo**) prediction error (**perr**).
 
 Fast implementation in C++ using OpenMP and non-redundant matrix decomposition methods.
 
-
-## Smoothing Methods
+# Smoothing Methods
 <p align="center">
 <table>
     <thead>
@@ -54,11 +53,55 @@ Fast implementation in C++ using OpenMP and non-redundant matrix decomposition m
 </table>
 </p> 
 
-# Setup and Installation
-The package has been tested and runs on Windows 10 and Ubuntu 20.04.
-Changes are being made so that the package will also run on Mac OS X.
+# Setup and Installation for Windows, Linux, and Mac
+Installation is the same for Windows, Linux, and Mac. Just type the following in the R Console:
 ```r
 devtools::install_github("harveybarnhard/looperr")
+```
+## Extra Setup and Installation for Mac (Speed Improvements)
+If you have a Mac and want to take advantage of parallelization
+for fast run-times, then you'll likely have to take some extra steps
+if your default compiler (clang on Mac) does not have OpenMP support.
+If you're on a Windows or Linux machine, no need to read further--you're
+already benefitting from OpenMP parallelization.
+
+The easiest way to get OpenMP support for looperr on a Mac 
+is to change the default R compiler to gcc from
+clang. Here's a step-by-ste on how to do this via the Mac Terminal.
+First, we will need to install OpenMP.
+```shell
+brew install libomp
+```
+If you have any problems, you might have to install the 
+[Homebrew package manager](https://brew.sh/).
+Next, we want to install our new OpenMP enabled compiler gcc. Before installing,
+we remove gfortran (fortran compiler) because `brew install gcc` will install
+its own version
+```shell
+rm '/usr/local/bin/gfortran'
+brew install gcc
+```
+Finally, we create a Makevars file which sets the default C, C++, and Fortran
+compilers (in this case to gcc version 10). You can create this file "by hand"
+but you might as well just create it in the terminal as follows:
+```shell
+mkdir ~/.R
+touch ~/.R/Makevars
+{
+  echo VER=-10
+  echo CC=gcc-10
+  echo CXX=g++-10
+  echo CXX11=g++-10
+  echo CXX14=g++-10
+  echo CXX17=g++-10
+  echo FC=/usr/bin/gfortran
+  echo F77=/usr/bin/gfortran
+  echo CFLAGS=-mtune=native -g -O2 -Wall -pedantic
+  echo CXXFLAGS=-mtune=native -g -O2 -Wall -pedantic
+  echo F77="gfortran-4.8"
+  echo FC="gfortran-4.8"
+  echo FLIBS = ""
+} >~/.R/Makevars
 ```
 
 # Usage
