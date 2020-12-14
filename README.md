@@ -65,7 +65,7 @@ Fast implementation in C++ using OpenMP and non-redundant matrix decomposition m
     <tbody>
         <tr>
             <td rowspan=1>Windows</td>
-            <td rowspan=1>Microsoft Windows Server 2019 10.0.17763</td>
+            <td rowspan=1>Microsoft Windows 10.0</td>
             <td>✔️</td>
             <td>✔️ </td>
         </tr>
