@@ -107,9 +107,10 @@ touch ~/.R/Makevars
 # Usage
 The main function of this package is `linsmooth()` which
 performs a similar role to the standard `lm()` function for
-regressions. The default is to run a local linear regression using
-a Gaussian kernel. If your dataset is `X` and your response vector is `y`,
-then the following few lines 
+regressions. By default, `linsmooth()` performs linear regression.
+If your dataset is `X`, your response vector is `y`, and your
+group identifier is `g` the here is a smörgåsbord of
+command commands you might want to run:
 
 ```r
 # Linear regression
@@ -124,9 +125,12 @@ linsmooth(X,y, w=wts, g=bygroup)
 linsmooth(X, y, method="loclin")
 # Local linear regression with Epanechnikov kernel and optimal bandwidth
 linsmooth(X, y, method="loclin", kernel="epan")
-# Local linear regression with Epanechnikov kernel and bandwidth H=1
+# Local linear regression with Gaussian kernel and bandwidth H=1
 linsmooth(X, y, method="loclin", H=1)
+# Local linear regression with Uniform Kernel, bandwidth H=1, by group g
+linsmooth(X, y, method="loclin", H=1, bygroup=g)
 ```
+
 ![](examples/looperr_example1.png)
 # Theory
 This package uses a bunch of linear algebra "tricks" to reduce
