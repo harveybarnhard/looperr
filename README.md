@@ -10,7 +10,7 @@ for quickly performing leave-one-out (**loo**) prediction error (**perr**).
 
 Fast implementation in C++ using OpenMP and non-redundant matrix decomposition methods.
 
-## Smoothing Methods
+# Smoothing Methods
 <p align="center">
 <table>
     <thead>
