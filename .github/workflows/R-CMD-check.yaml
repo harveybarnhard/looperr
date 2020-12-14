@@ -72,8 +72,6 @@ jobs:
       - name: Install Open MP on Mac
         if: ${{ matrix.config.os == 'macOS-latest' && matrix.config.openmp }}
         run: |
-          which gcc
-          gcc --version
           brew install libomp
           rm '/usr/local/bin/gfortran'
           brew install gcc
@@ -94,10 +92,6 @@ jobs:
             echo FC="gfortran-4.8"
             echo FLIBS = ""
           } >~/.R/Makevars
-          which g++
-          g++ --version
-          which g++-10
-          g++-10 --version
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
