@@ -52,6 +52,7 @@ Fast implementation in C++ using OpenMP and non-redundant matrix decomposition m
 </table>
 
 # Setup and Installation for Windows, Linux, and Mac
+
 <table>
     <thead>
         <tr>
@@ -82,6 +83,7 @@ Fast implementation in C++ using OpenMP and non-redundant matrix decomposition m
         </tr>
     </tbody>
 </table>
+
 Installation is the same for Windows, Linux, and Mac. Just type the following in the R Console:
 ```r
 devtools::install_github("harveybarnhard/looperr")
