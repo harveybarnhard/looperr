@@ -82,7 +82,8 @@ rm '/usr/local/bin/gfortran'
 brew install gcc
 ```
 Finally, we create a Makevars file which sets the default C, C++, and Fortran
-compilers (in this case to gcc version 10).
+compilers (in this case to gcc version 10). You can create this file "by hand"
+but you might as well just create it in the terminal as follows:
 ```shell
 mkdir ~/.R
 touch ~/.R/Makevars
