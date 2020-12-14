@@ -11,7 +11,6 @@ for quickly performing leave-one-out (**loo**) prediction error (**perr**).
 Fast implementation in C++ using OpenMP and non-redundant matrix decomposition methods.
 
 # Smoothing Methods
-<p align="center">
 <table>
     <thead>
         <tr>
@@ -51,9 +50,38 @@ Fast implementation in C++ using OpenMP and non-redundant matrix decomposition m
         </tr>
     </tbody>
 </table>
-</p> 
 
 # Setup and Installation for Windows, Linux, and Mac
+<table>
+    <thead>
+        <tr>
+            <th>OS</th>
+            <th>Version Tested</th>
+            <th>Build Passing</th>
+            <th>Out-of-Package OpenMP Support</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=1>Windows</td>
+            <td rowspan=1>Microsoft Windows Server 2019 10.0.17763</td>
+            <td>✔️</td>
+            <td>✔️ </td>
+        </tr>
+        <tr>
+            <td rowspan=1>Mac</td>
+            <td rowspan=1>Mac OS X 10.15.7 (Catalina)</td>
+            <td>✔️</td>
+            <td>❌ (see extra setup installations)</td>
+        </tr>
+        <tr>
+            <td rowspan=1>Linux</td>
+            <td rowspan=1>Ubuntu 20.04</td>
+            <td>✔️</td>
+            <td>✔️</td>
+        </tr>
+    </tbody>
+</table>
 Installation is the same for Windows, Linux, and Mac. Just type the following in the R Console:
 ```r
 devtools::install_github("harveybarnhard/looperr")
