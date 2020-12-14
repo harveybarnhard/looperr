@@ -10,7 +10,7 @@ PKG_LIBS = @PKG_LIBS@ @openmp_cxxflags@
 # Hence the onerous @...@ substitution. Is it still appropriate in 2020 that we can't use +=?
 
 all: $(SHLIB)
-	@echo PKG_CFLAGS = $(PKG_CFLAGS)
+	@echo PKG_CXXFLAGS = $(PKG_CXXFLAGS)
 	@echo PKG_LIBS = $(PKG_LIBS)
 	if [ "$(SHLIB)" != "looperr$(SHLIB_EXT)" ]; then mv $(SHLIB) looperr$(SHLIB_EXT); fi
 	if [ "$(OS)" != "Windows_NT" ] && [ `uname -s` = 'Darwin' ]; then install_name_tool -id looperr$(SHLIB_EXT) looperr$(SHLIB_EXT); fi
