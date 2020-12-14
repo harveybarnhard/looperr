@@ -15,4 +15,4 @@ Imports:
     Rcpp, RcppArmadillo, stats
 Depends:
 Suggests:
-    data.table
+    data.table, testthat
