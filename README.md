@@ -58,7 +58,7 @@ Installation is the same for Windows, Linux, and Mac. Just type the following in
 ```r
 devtools::install_github("harveybarnhard/looperr")
 ```
-## Extra Setup and Installation for Mac for Improved Efficiency
+## Extra Setup and Installation for Mac (Speed Improvements)
 If you have a Mac and want to take advantage of parallelization
 for fast run-times, then you'll likely have to take some extra steps
 if your default compiler (clang on Mac) does not have OpenMP support.
