@@ -43,7 +43,7 @@ test_that("loo_loclin Correct LOO error, Uniform Kernel", {
   expect_equal(loout_looer, total_looer)
 })
 
-test_that("fastols_by compared to lm", {
+test_that("loclin_sameX_unif_by compared to loclin_sameX_unif", {
   n = 1000
   X = cbind(rep(1, n), rnorm(n))
   w = rep(1, n)
