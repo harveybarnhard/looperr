@@ -15,7 +15,7 @@ linsmooth(
   bygroup = NULL,
   compute_se = TRUE,
   compute_hat = FALSE,
-  nthreads = 1L
+  nthr = 1L
 )
 }
 \arguments{
@@ -48,7 +48,7 @@ errors. TRUE by default.}
 \item{compute_hat}{logical; If TRUE then diagonal of hat matrix (leverage) is
 calculated for each observation. FALSE by default.}
 
-\item{nthreads}{positive integer; Number of threads to use for parallelized
+\item{nthr}{positive integer; Number of threads to use for parallelized
 operations. Defaults to 1 thread.}
 }
 \description{

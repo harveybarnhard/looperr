@@ -13,19 +13,70 @@ using namespace Rcpp;
 //' Function that performs linear regression
 //' and saves the diagonal of the hat matrix
 //'
+//' @param X an nxk numeric data matrix of features
+//' @param y The nx1 numeric output vector
+//' @param compute_se binary; 1 to compute VCV matrix, 0 otherwise
+//' @param compute_hat binary; 1 to compute diagonal of hat matrix, 0 otherwise
+// [[Rcpp::export]]
+Rcpp::List fastols(arma::mat const &X,
+                   arma::vec const &y,
+                   int const compute_se = 1,
+                   int const compute_hat = 0) {
+  int ncols = X.n_cols, nrows = X.n_rows;
+  arma::vec hat(nrows, arma::fill::zeros);
+  arma::vec pred_err(nrows, arma::fill::zeros);
+  arma::mat R(ncols, ncols, arma::fill::zeros);
+  // Solve OLS using fast QR decomposition
+  arma::mat Q;
+  arma::qr_econ(Q, R, X);
+  arma::vec Qy(ncols, arma::fill::none);
+  for(int k = 0; k < ncols; k++){
+    Qy(k) = dot(Q.col(k), y);
+  }
+  arma::vec beta = solve(R, Qy);
+  // Find fitted values noting that yhat = Xbetahat = QQ'y
+  arma::vec fittedy = Q*Qy;
+  // Find residuals
+  arma::vec res = y - fittedy;
+  // Find standard OLS variance
+  if(compute_se == 1){
+    double sig2 = arma::as_scalar(sum(pow(res, 2))/(Q.n_rows - ncols));
+    R = inv(R);
+    R = sig2 * R * R.t();
+  }
+  // Find diagonal of hat matrix given the Q of the QR factorization above
+  if(compute_hat==1){
+    hat = sum(Q % Q, 1);
+    pred_err = res / (1 - hat);
+  }
+  List listout = List::create(Named("beta")          = beta,
+                              Named("hatdiag")       = hat,
+                              Named("loo_pred_err")  = pred_err,
+                              Named("fitted.values") = fittedy,
+                              Named("VCV")           = R);
+  return listout;
+}
+
+// -----------------------------------------
+// Function that performs linear regression
+// and saves the diagonals of the hat matrix
+// and also uses observation weights
+// -----------------------------------------
+
+//' Function that performs linear regression
+//' and saves the diagonal of the hat matrix
+//'
 //' @param X an nxk numeric data matrix
 //' @param y The nx1 numeric output vector
 //' @param w an nx1 numeric vector of weights
 //' @param compute_se binary; 1 to compute VCV matrix, 0 otherwise
 //' @param compute_hat binary; 1 to compute diagonal of hat matrix, 0 otherwise
-//' @export
 // [[Rcpp::export]]
-
-Rcpp::List fastols(arma::mat const &X,
-                   arma::vec const &y,
-                   arma::vec const &w,
-                   int const compute_se = 1,
-                   int const compute_hat = 0) {
+Rcpp::List fastolswt(arma::mat const &X,
+                     arma::vec const &y,
+                     arma::vec const &w,
+                     int const compute_se = 1,
+                     int const compute_hat = 0) {
   int ncols = X.n_cols, nrows = X.n_rows;
   arma::vec hat(nrows, arma::fill::zeros);
   arma::vec pred_err(nrows, arma::fill::zeros);

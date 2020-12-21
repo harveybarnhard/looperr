@@ -4,14 +4,24 @@
 #' Function that performs linear regression
 #' and saves the diagonal of the hat matrix
 #'
+#' @param X an nxk numeric data matrix of features
+#' @param y The nx1 numeric output vector
+#' @param compute_se binary; 1 to compute VCV matrix, 0 otherwise
+#' @param compute_hat binary; 1 to compute diagonal of hat matrix, 0 otherwise
+fastols <- function(X, y, compute_se = 1L, compute_hat = 0L) {
+    .Call(`_looperr_fastols`, X, y, compute_se, compute_hat)
+}
+
+#' Function that performs linear regression
+#' and saves the diagonal of the hat matrix
+#'
 #' @param X an nxk numeric data matrix
 #' @param y The nx1 numeric output vector
 #' @param w an nx1 numeric vector of weights
 #' @param compute_se binary; 1 to compute VCV matrix, 0 otherwise
 #' @param compute_hat binary; 1 to compute diagonal of hat matrix, 0 otherwise
-#' @export
-fastols <- function(X, y, w, compute_se = 1L, compute_hat = 0L) {
-    .Call(`_looperr_fastols`, X, y, w, compute_se, compute_hat)
+fastolswt <- function(X, y, w, compute_se = 1L, compute_hat = 0L) {
+    .Call(`_looperr_fastolswt`, X, y, w, compute_se, compute_hat)
 }
 
 #' Function that performs linear regression

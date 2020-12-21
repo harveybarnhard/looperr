@@ -7,8 +7,22 @@
 using namespace Rcpp;
 
 // fastols
-Rcpp::List fastols(arma::mat const& X, arma::vec const& y, arma::vec const& w, int const compute_se, int const compute_hat);
-RcppExport SEXP _looperr_fastols(SEXP XSEXP, SEXP ySEXP, SEXP wSEXP, SEXP compute_seSEXP, SEXP compute_hatSEXP) {
+Rcpp::List fastols(arma::mat const& X, arma::vec const& y, int const compute_se, int const compute_hat);
+RcppExport SEXP _looperr_fastols(SEXP XSEXP, SEXP ySEXP, SEXP compute_seSEXP, SEXP compute_hatSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat const& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec const& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int const >::type compute_se(compute_seSEXP);
+    Rcpp::traits::input_parameter< int const >::type compute_hat(compute_hatSEXP);
+    rcpp_result_gen = Rcpp::wrap(fastols(X, y, compute_se, compute_hat));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fastolswt
+Rcpp::List fastolswt(arma::mat const& X, arma::vec const& y, arma::vec const& w, int const compute_se, int const compute_hat);
+RcppExport SEXP _looperr_fastolswt(SEXP XSEXP, SEXP ySEXP, SEXP wSEXP, SEXP compute_seSEXP, SEXP compute_hatSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -17,7 +31,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec const& >::type w(wSEXP);
     Rcpp::traits::input_parameter< int const >::type compute_se(compute_seSEXP);
     Rcpp::traits::input_parameter< int const >::type compute_hat(compute_hatSEXP);
-    rcpp_result_gen = Rcpp::wrap(fastols(X, y, w, compute_se, compute_hat));
+    rcpp_result_gen = Rcpp::wrap(fastolswt(X, y, w, compute_se, compute_hat));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -126,4 +140,22 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(loclin_sameX_unif_by(X, y, g, H, nthr));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_looperr_fastols", (DL_FUNC) &_looperr_fastols, 4},
+    {"_looperr_fastolswt", (DL_FUNC) &_looperr_fastolswt, 5},
+    {"_looperr_fastols_by", (DL_FUNC) &_looperr_fastols_by, 6},
+    {"_looperr_fastols_bywt", (DL_FUNC) &_looperr_fastols_bywt, 7},
+    {"_looperr_loclin_diffX", (DL_FUNC) &_looperr_loclin_diffX, 6},
+    {"_looperr_loclin_sameX", (DL_FUNC) &_looperr_loclin_sameX, 5},
+    {"_looperr_loclin_sameX_unif", (DL_FUNC) &_looperr_loclin_sameX_unif, 3},
+    {"_looperr_loclin_diffX_unif", (DL_FUNC) &_looperr_loclin_diffX_unif, 4},
+    {"_looperr_loclin_sameX_unif_by", (DL_FUNC) &_looperr_loclin_sameX_unif_by, 5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_looperr(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

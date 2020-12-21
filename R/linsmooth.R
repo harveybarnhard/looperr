@@ -19,7 +19,7 @@
 #'     errors. TRUE by default.
 #' @param compute_hat logical; If TRUE then diagonal of hat matrix (leverage) is
 #'     calculated for each observation. FALSE by default.
-#' @param nthreads positive integer; Number of threads to use for parallelized
+#' @param nthr positive integer; Number of threads to use for parallelized
 #'     operations. Defaults to 1 thread.
 #' @export
 linsmooth = function(X,
@@ -32,7 +32,7 @@ linsmooth = function(X,
                      bygroup=NULL,
                      compute_se=TRUE,
                      compute_hat=FALSE,
-                     nthreads=1L) {
+                     nthr=1L) {
   # Control input ==============================================================
   if(!is.matrix(X)){
     X = unname(as.matrix(X))
@@ -71,7 +71,7 @@ linsmooth = function(X,
   }
 
   # Weights
-  if(!is.numeric(w)){
+  if(!is.null(w) & !is.numeric(w)){
     stop("w must be a vector of positive numeric weights.")
   }
 
@@ -103,14 +103,20 @@ linsmooth = function(X,
       ind = order(bygroup)
       gsorted = as.integer(cumsum(!duplicated(bygroup[ind])))
       if(!is.null(w)){
-        output = fastols_bywt(X[ind,], y[ind], w[ind], gsorted, nthr=nthreads,
+        output = fastols_bywt(X[ind,], y[ind], w[ind], gsorted, nthr=nthr,
                               compute_se = compute_se, compute_hat = compute_hat)
       }else{
-        output = fastols_by(X[ind,], y[ind], gsorted, nthr=nthreads,
+        output = fastols_by(X[ind,], y[ind], gsorted, nthr=nthr,
                             compute_se = compute_se, compute_hat = compute_hat)
       }
     }else{
-      fastols(X,y,w)
+      if(!is.null(w)){
+        output = fastolswt(X, y, w,
+                           compute_se = compute_se, compute_hat = compute_hat)
+      }else{
+        output = fastols(X, y,
+                         compute_se = compute_se, compute_hat = compute_hat)
+      }
     }
     return(output)
   }
