@@ -12,7 +12,7 @@ linsmooth(
   w = NULL,
   kernel = "gauss",
   H = NULL,
-  bygroup = NULL,
+  by = NULL,
   compute_se = TRUE,
   compute_hat = FALSE,
   nthr = 1L
@@ -39,7 +39,7 @@ not used for method "loclin", optional for "ols"}
 bandwidth matrix used if "loclin" method is used. Defaults
 to a diagonal matrix being optimized by minimizing LOOCV score.}
 
-\item{bygroup}{an nx1 vector of groups if performing linear smoothing within
+\item{by}{an nx1 vector of groups if performing linear smoothing within
 groups.}
 
 \item{compute_se}{logical; If TRUE then OLS procedure will compute standard

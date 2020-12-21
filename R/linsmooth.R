@@ -13,7 +13,7 @@
 #' @param H positive vector; Bandwidth vector that represents diagonal of
 #'     bandwidth matrix used if "loclin" method is used. Defaults
 #'     to a diagonal matrix being optimized by minimizing LOOCV score.
-#' @param bygroup an nx1 vector of groups if performing linear smoothing within
+#' @param by an nx1 vector of groups if performing linear smoothing within
 #'     groups.
 #' @param compute_se logical; If TRUE then OLS procedure will compute standard
 #'     errors. TRUE by default.
@@ -29,7 +29,7 @@ linsmooth = function(X,
                      w=NULL,
                      kernel="gauss",
                      H=NULL,
-                     bygroup=NULL,
+                     by=NULL,
                      compute_se=TRUE,
                      compute_hat=FALSE,
                      nthr=1L) {
@@ -99,9 +99,9 @@ linsmooth = function(X,
     output["bandwidth"] = H
     return(output)
   }else if(method=="ols"){
-    if(!is.null(bygroup)){
-      ind = order(bygroup)
-      gsorted = as.integer(cumsum(!duplicated(bygroup[ind])))
+    if(!is.null(by)){
+      ind = order(by)
+      gsorted = as.integer(cumsum(!duplicated(by[ind])))
       if(!is.null(w)){
         output = fastols_bywt(X[ind,], y[ind], w[ind], gsorted, nthr=nthr,
                               compute_se = compute_se, compute_hat = compute_hat)
