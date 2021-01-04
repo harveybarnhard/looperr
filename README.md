@@ -127,6 +127,6 @@ This package uses a bunch of linear algebra "tricks" to reduce
 the number of computations, leading to quicker runtimes
 and better numerical stability. For proofs and explanations,
 see my
-[blog post](https://harveybarnhard.com/posts/evaluating-prediction-error.html)
+[blog post](https://harveybarnhard.com/#/blog/calculating-diagonal-of-hat-matrix)
 on this package. The blog post is currently incomplete, and
 more proofs will be added later.
