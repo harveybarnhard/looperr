@@ -99,8 +99,8 @@ The main function of this package is `linsmooth()` which
 performs a similar role to the standard `lm()` function for
 regressions. By default, `linsmooth()` performs linear regression.
 If your dataset is `X`, your response vector is `y`, and your
-group identifier is `g` the here is a smörgåsbord of
-command commands you might want to run:
+group identifier is `g`. Here is a smörgåsbord of
+commands you might want to run:
 
 ```r
 # Linear regression
