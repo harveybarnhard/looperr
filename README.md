@@ -125,8 +125,4 @@ linsmooth(X, y, method="loclin", H=1, bygroup=g)
 # Theory
 This package uses a bunch of linear algebra "tricks" to reduce
 the number of computations, leading to quicker runtimes
-and better numerical stability. For proofs and explanations,
-see my
-[blog post](https://harveybarnhard.com/#/blog/calculating-diagonal-of-hat-matrix)
-on this package. The blog post is currently incomplete, and
-more proofs will be added later.
+and better numerical stability.
